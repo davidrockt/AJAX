@@ -1,7 +1,9 @@
 import * as express from "express";
 
 const router: express.Express = express();
-router.listen(8080);
+router.listen(8080, () => {
+    console.log("Verbunden auf http://localhost:8080");
+});
 
 router.use(express.json());
 router.use(express.urlencoded({extended: false}));

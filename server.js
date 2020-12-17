@@ -2,7 +2,9 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 var express = require("express");
 var router = express();
-router.listen(8080);
+router.listen(8080, function () {
+    console.log("Verbunden auf http://localhost:8080");
+});
 router.use(express.json());
 router.use(express.urlencoded({ extended: false }));
 router.use("/res", express.static(__dirname + "/public"));
