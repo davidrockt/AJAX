@@ -15,11 +15,13 @@
             crossorigin="anonymous"></script>
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="/dependency/axios/dist/axios.js"></script>
+    <script type="module" src="/res/script_userman.js"></script>
 </head>
 <body>
 <div class="container">
     <div class="row mt-5">
-        <table class="table table-sm table-bordered">
+        <table id="tableUserList" class="table table-sm table-bordered">
             <thead>
             <tr>
                 <th scope="col">#</th>
@@ -46,38 +48,40 @@
 
 
 
-    <form class="form-horizontal">
+    <form id="formNeuerUser" class="form-horizontal">
         <h5>Neuer User</h5>
         <div class="form-group row my-1">
             <label for="inputVorname" class="col-sm-2 col-form-label-sm">Vorname</label>
             <div class="col-sm-10">
-                <input type="text" class="form-control-sm" id="inputVorname" placeholder="">
+                <input type="text" class="form-control-sm" name="inputVorname" id="inputVorname" placeholder="">
             </div>
         </div>
         <div class="form-group row my-1">
             <label for="inputNachname" class="col-sm-2 col-form-label-sm">Nachname</label>
             <div class="col-sm-10">
-                <input type="text" class="form-control-sm" id="inputNachname" placeholder="">
+                <input type="text" class="form-control-sm" name="inputNachname" id="inputNachname" placeholder="">
             </div>
         </div>
         <div class="form-group row my-1">
             <label for="inputEmail" class="col-sm-2 col-form-label-sm">Email</label>
             <div class="col-sm-10">
-                <input type="email" class="form-control-sm" id="inputEmail" placeholder="">
+                <input type="email" class="form-control-sm" name="inputEmail" id="inputEmail" placeholder="">
             </div>
         </div>
         <div class="form-group row my-1">
             <label for="inputPasswort" class="col-sm-2 col-form-label-sm">Passwort</label>
             <div class="col-sm-10">
-                <input type="password" class="form-control-sm" id="inputPasswort">
+                <input type="password" class="form-control-sm" name="inputPasswort" id="inputPasswort">
             </div>
         </div>
         <div class="form-group row my-1">
             <div class="col-sm-10">
-                <button type="submit" class="btn btn-sm btn-primary">Hinzufügen</button>
+                <input type="submit" class="btn btn-sm btn-primary" value="Hinzufügen">
             </div>
         </div>
+        <p id="out"></p>
     </form>
+
 
 </div>
 </body>
