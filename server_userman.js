@@ -2,6 +2,16 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 var express = require("express");
 var app = express();
+var User = /** @class */ (function () {
+    function User(vorname, nachname, email, passwort) {
+        this.vorname = vorname;
+        this.nachname = nachname;
+        this.email = email;
+        this.passwort = passwort;
+    }
+    return User;
+}());
+var userList = [];
 app.listen(8080, function () {
     console.log("Verbunden auf http://localhost:8080");
 });
@@ -14,11 +24,15 @@ app.get("/", function (req, res) {
     res.sendFile(__dirname + "/userman.html");
 });
 app.post("/neueruser", function (req, res) {
-    var input = req.body.vorname;
+    var vorname = req.body.vorname;
+    var nachname = req.body.nachname;
+    var email = req.body.email;
+    var passwort = req.body.passwort;
+    var user = new User(vorname, nachname, email, passwort);
+    userList.push(user);
     res.status(200);
-    // res.contentType("application/json");
-    // res.send({'user1': input});
-    res.send("Echo: " + input);
+    res.contentType("application/json");
+    res.send(JSON.stringify(user));
 });
 app.get("/module/:nr", function (req, res) {
     var nr = Number(req.params.nr);

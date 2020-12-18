@@ -1,6 +1,19 @@
 import * as express from "express";
+import {json} from "express";
 
 const app: express.Express = express();
+class User {
+    constructor(vorname: string, nachname: string, email: string, passwort: string) {
+        this.vorname = vorname;
+        this.nachname = nachname;
+        this.email = email;
+        this.passwort = passwort;
+    }
+    vorname: string; nachname: string; email: string; passwort: string;
+}
+
+let userList: User[] = [];
+
 app.listen(8080, () => {
     console.log("Verbunden auf http://localhost:8080");
 });
@@ -17,11 +30,15 @@ app.get("/", (req: express.Request, res: express.Response) => {
 });
 
 app.post("/neueruser", (req: express.Request, res: express.Response) => {
-    const input: string = req.body.vorname;
+    const vorname: string = req.body.vorname;
+    const nachname: string = req.body.nachname;
+    const email: string = req.body.email;
+    const passwort: string = req.body.passwort;
+    const user = new User(vorname, nachname, email, passwort);
+    userList.push(user);
     res.status(200);
-    // res.contentType("application/json");
-    // res.send({'user1': input});
-    res.send("Echo: " + input);
+    res.contentType("application/json");
+    res.send(JSON.stringify(user));
 });
 
 app.get("/module/:nr", (req: express.Request, res: express.Response) => {
