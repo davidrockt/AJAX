@@ -20,26 +20,30 @@ document.addEventListener("DOMContentLoaded", function () {
         }).then(function (value) {
             console.log("Response data:");
             console.log(value.data);
-            // out.innerText = value.data[0]["vorname"];
-            var row = tableUserList.insertRow(-1);
-            var td1 = document.createElement('td');
-            var td2 = document.createElement('td');
-            var td3 = document.createElement('td');
-            var td4 = document.createElement('td');
-            td1.innerHTML = value.data["vorname"];
-            td2.innerHTML = value.data["nachname"];
-            td3.innerHTML = value.data["email"];
-            td4.innerHTML = "<td>\n" +
-                "                 <button type=\"button\" class=\"btn btn-secondary btn-sm\">Edit</button>\n" +
-                "                 <button type=\"button\" class=\"btn btn-danger btn-sm\">Delete</button>\n" +
-                "            </td>";
-            row.appendChild(td1);
-            row.appendChild(td2);
-            row.appendChild(td3);
-            row.appendChild(td4);
+            console.log(typeof value.data);
+            // Neue Reihe in die User-Tabelle einfügen
+            appendNewRow(value.data, tableUserList);
             formNeuerUser.reset();
         }).catch(function (reason) {
             out.innerText = "Es ist ein Fehler aufgetreten: " + reason;
         });
     });
 });
+function appendNewRow(data, tableUserList) {
+    var row = tableUserList.insertRow(-1);
+    var td1 = document.createElement('td');
+    var td2 = document.createElement('td');
+    var td3 = document.createElement('td');
+    var td4 = document.createElement('td');
+    td1.innerHTML = data["vorname"];
+    td2.innerHTML = data["nachname"];
+    td3.innerHTML = data["email"];
+    td4.innerHTML = "<td>\n" +
+        "                 <button type=\"button\" class=\"btn btn-secondary btn-sm\">Edit</button>\n" +
+        "                 <button type=\"button\" class=\"btn btn-danger btn-sm\">Delete</button>\n" +
+        "            </td>";
+    row.appendChild(td1);
+    row.appendChild(td2);
+    row.appendChild(td3);
+    row.appendChild(td4);
+}
