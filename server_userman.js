@@ -9,6 +9,11 @@ var User = /** @class */ (function () {
         this.email = email;
         this.passwort = passwort;
     }
+    User.prototype.editUser = function (vorname, nachname, passwort) {
+        this.vorname = vorname;
+        this.nachname = nachname;
+        this.passwort = passwort;
+    };
     return User;
 }());
 var userList = [];
@@ -34,6 +39,22 @@ app.post("/neueruser", function (req, res) {
     res.contentType("application/json");
     res.send(JSON.stringify(user));
 });
+app.post("/edituser", function (req, res) {
+    var vorname = req.body.vorname;
+    var nachname = req.body.nachname;
+    var email = req.body.email;
+    var passwort = req.body.passwort;
+    var editedUser;
+    for (var _i = 0, userList_1 = userList; _i < userList_1.length; _i++) {
+        var user = userList_1[_i];
+        if (user.email == email)
+            editedUser = user;
+    }
+    editedUser.editUser(vorname, nachname, passwort);
+    res.status(200);
+    res.contentType("application/json");
+    res.send(JSON.stringify(editedUser));
+});
 app.get("/module/:nr", function (req, res) {
     var nr = Number(req.params.nr);
     var module = ["OOP", "DM", "AuD", "GDI", "WBS", "LA"];
@@ -46,3 +67,4 @@ app.get("/module/:nr", function (req, res) {
     }
 });
 // Warum bei getElementById "as HTML..." ?
+// welcher Datentyp ist JSON? Object?

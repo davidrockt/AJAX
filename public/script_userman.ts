@@ -1,6 +1,6 @@
 // Importiert die statische Variable "axios" und den Typ "AxiosResponse"
 // Bitte vor dem Ausführen auskommentieren und nur während dem Programmieren drinnen lassen...
-// import axios, {AxiosResponse} from "axios";
+import axios, {AxiosResponse} from "axios";
 
 
 
@@ -8,6 +8,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const out: HTMLElement = document.getElementById("out");
     const tableUserList: HTMLTableElement = document.getElementById("tableUserList") as HTMLTableElement;
     const formNeuerUser: HTMLFormElement = document.getElementById("formNeuerUser") as HTMLFormElement;
+    const formEditUser: HTMLFormElement = document.getElementById("formEditUser") as HTMLFormElement;
 
     formNeuerUser.addEventListener("submit", (event: Event) => {
         event.preventDefault();
@@ -25,7 +26,26 @@ document.addEventListener("DOMContentLoaded", () => {
         }).then((value: AxiosResponse) => {
             console.log("Response data:")
             console.log(value.data);
-            console.log(typeof value.data)
+            // Neue Reihe in die User-Tabelle einfügen
+            appendNewRow(value.data, tableUserList);
+            formNeuerUser.reset();
+        }).catch((reason: any) => {
+            out.innerText = "Es ist ein Fehler aufgetreten: " + reason;
+        });
+    });
+
+    formEditUser.addEventListener("submit", (event: Event) => {
+        event.preventDefault();
+        // Die Daten des gesamten Formulars werden in dem FormData-Objekt gesammelt
+        const data: FormData = new FormData(formEditUser);
+        // console.log(data);
+
+        axios.post("/edituser", {
+            "vorname": data.get("editVorname"),
+            "nachname": data.get("editNachname"),
+            "email": data.get("editEmail"),
+            "passwort": data.get("editPasswort")
+        }).then((value: AxiosResponse) => {
             // Neue Reihe in die User-Tabelle einfügen
             appendNewRow(value.data, tableUserList);
             formNeuerUser.reset();

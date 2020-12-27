@@ -10,6 +10,11 @@ class User {
         this.passwort = passwort;
     }
     vorname: string; nachname: string; email: string; passwort: string;
+    editUser(vorname: string, nachname: string, passwort: string) {
+        this.vorname = vorname;
+        this.nachname = nachname;
+        this.passwort = passwort;
+    }
 }
 
 let userList: User[] = [];
@@ -41,6 +46,21 @@ app.post("/neueruser", (req: express.Request, res: express.Response) => {
     res.send(JSON.stringify(user));
 });
 
+app.post("/edituser", (req: express.Request, res: express.Response) => {
+    const vorname: string = req.body.vorname;
+    const nachname: string = req.body.nachname;
+    const email: string = req.body.email;
+    const passwort: string = req.body.passwort;
+    let editedUser: User;
+    for(let user of userList) {
+        if(user.email == email) editedUser = user;
+    }
+    editedUser.editUser(vorname, nachname, passwort);
+    res.status(200);
+    res.contentType("application/json");
+    res.send(JSON.stringify(editedUser));
+});
+
 app.get("/module/:nr", (req: express.Request, res: express.Response) => {
     const nr: number = Number(req.params.nr);
     const module: string[] = ["OOP", "DM", "AuD", "GDI", "WBS", "LA"];
@@ -54,3 +74,4 @@ app.get("/module/:nr", (req: express.Request, res: express.Response) => {
 });
 
 // Warum bei getElementById "as HTML..." ?
+// welcher Datentyp ist JSON? Object?
