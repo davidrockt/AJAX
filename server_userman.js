@@ -2,12 +2,15 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 var express = require("express");
 var app = express();
+var idxUser = 0;
 var User = /** @class */ (function () {
     function User(vorname, nachname, email, passwort) {
         this.vorname = vorname;
         this.nachname = nachname;
         this.email = email;
         this.passwort = passwort;
+        this.userid = idxUser;
+        idxUser++;
     }
     User.prototype.editUser = function (vorname, nachname, passwort) {
         this.vorname = vorname;

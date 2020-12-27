@@ -2,14 +2,17 @@ import * as express from "express";
 import {json} from "express";
 
 const app: express.Express = express();
+let idxUser: number = 0;
 class User {
     constructor(vorname: string, nachname: string, email: string, passwort: string) {
         this.vorname = vorname;
         this.nachname = nachname;
         this.email = email;
         this.passwort = passwort;
+        this.userid = idxUser;
+        idxUser++;
     }
-    vorname: string; nachname: string; email: string; passwort: string;
+    vorname: string; nachname: string; email: string; passwort: string; userid: number;
     editUser(vorname: string, nachname: string, passwort: string) {
         this.vorname = vorname;
         this.nachname = nachname;

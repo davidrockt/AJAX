@@ -1,21 +1,23 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
 // Importiert die statische Variable "axios" und den Typ "AxiosResponse"
 // Bitte vor dem Ausführen auskommentieren und nur während dem Programmieren drinnen lassen...
-var axios_1 = require("axios");
+// import axios, {AxiosResponse} from "axios";
 document.addEventListener("DOMContentLoaded", function () {
     var out = document.getElementById("out");
     var tableUserList = document.getElementById("tableUserList");
     var formNeuerUser = document.getElementById("formNeuerUser");
     var formEditUser = document.getElementById("formEditUser");
+    var editButtons = [];
+    var deleteButtons = [];
     formNeuerUser.addEventListener("submit", function (event) {
         event.preventDefault();
         // Die Daten des gesamten Formulars werden in dem FormData-Objekt gesammelt
         var data = new FormData(formNeuerUser);
         console.log(data);
+        var newEditButton;
+        var newDeleteButton;
         // Ein POST-Request wird an /echo adressiert und das (typenlose) Objekt {"in":"wert"} als Daten gesendet
         // Die anonymen Callbackfunktionen für then oder catch werden nach dem Eingang eines Responses aufgerufen
-        axios_1.default.post("/neueruser", {
+        axios.post("/neueruser", {
             "vorname": data.get("inputVorname"),
             "nachname": data.get("inputNachname"),
             "email": data.get("inputEmail"),
@@ -25,9 +27,15 @@ document.addEventListener("DOMContentLoaded", function () {
             console.log(value.data);
             // Neue Reihe in die User-Tabelle einfügen
             appendNewRow(value.data, tableUserList);
+            newEditButton = document.getElementById('btnEdit' + value.data['userid']);
+            newEditButton.addEventListener('click', editUser);
+            editButtons.push(newEditButton);
+            newDeleteButton = document.getElementById('btnDelete' + value.data['userid']);
+            newDeleteButton.addEventListener('click', deleteUser);
+            deleteButtons.push(newDeleteButton);
             formNeuerUser.reset();
         }).catch(function (reason) {
-            out.innerText = "Es ist ein Fehler aufgetreten: " + reason;
+            console.log("Es ist ein Fehler aufgetreten: " + reason);
         });
     });
     formEditUser.addEventListener("submit", function (event) {
@@ -35,7 +43,7 @@ document.addEventListener("DOMContentLoaded", function () {
         // Die Daten des gesamten Formulars werden in dem FormData-Objekt gesammelt
         var data = new FormData(formEditUser);
         // console.log(data);
-        axios_1.default.post("/edituser", {
+        axios.post("/edituser", {
             "vorname": data.get("editVorname"),
             "nachname": data.get("editNachname"),
             "email": data.get("editEmail"),
@@ -49,6 +57,14 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 });
+function editUser(event) {
+    var btn = event.currentTarget;
+    var str = btn.id.substr(7);
+    console.log("Edit Function" + str);
+}
+function deleteUser(event) {
+    console.log("Delete Function");
+}
 function appendNewRow(data, tableUserList) {
     var row = tableUserList.insertRow(-1);
     var td1 = document.createElement('td');
@@ -59,8 +75,8 @@ function appendNewRow(data, tableUserList) {
     td2.innerHTML = data["nachname"];
     td3.innerHTML = data["email"];
     td4.innerHTML = "<td>\n" +
-        "                 <button type=\"button\" class=\"btn btn-secondary btn-sm\">Edit</button>\n" +
-        "                 <button type=\"button\" class=\"btn btn-danger btn-sm\">Delete</button>\n" +
+        "                 <button id='btnEdit" + data['userid'] + "' type=\"button\" class=\"btn btn-secondary btn-sm\">Edit</button>\n" +
+        "                 <button id='btnDelete" + data['userid'] + "'type=\"button\" class=\"btn btn-danger btn-sm\">Delete</button>\n" +
         "            </td>";
     row.appendChild(td1);
     row.appendChild(td2);
