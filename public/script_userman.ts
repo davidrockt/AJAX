@@ -2,14 +2,13 @@
 // Bitte vor dem Ausführen auskommentieren und nur während dem Programmieren drinnen lassen...
 // import axios, {AxiosResponse} from "axios";
 
+const tableUserList: HTMLTableElement = document.getElementById("tableUserList") as HTMLTableElement;
+const formNeuerUser: HTMLFormElement = document.getElementById("formNeuerUser") as HTMLFormElement;
+const formEditUser: HTMLFormElement = document.getElementById("formEditUser") as HTMLFormElement;
+let editButtons: HTMLButtonElement[] = [];
+let deleteButtons: HTMLButtonElement[] = [];
 
 document.addEventListener("DOMContentLoaded", () => {
-    const out: HTMLElement = document.getElementById("out");
-    const tableUserList: HTMLTableElement = document.getElementById("tableUserList") as HTMLTableElement;
-    const formNeuerUser: HTMLFormElement = document.getElementById("formNeuerUser") as HTMLFormElement;
-    const formEditUser: HTMLFormElement = document.getElementById("formEditUser") as HTMLFormElement;
-    let editButtons: HTMLButtonElement[] = [];
-    let deleteButtons: HTMLButtonElement[] = [];
 
     formNeuerUser.addEventListener("submit", (event: Event) => {
         event.preventDefault();
@@ -27,16 +26,18 @@ document.addEventListener("DOMContentLoaded", () => {
             "email": data.get("inputEmail"),
             "passwort": data.get("inputPasswort")
         }).then((value: AxiosResponse) => {
-            console.log("Response data:")
-            console.log(value.data);
             // Neue Reihe in die User-Tabelle einfügen
             appendNewRow(value.data, tableUserList);
+
+            // Edit- und Delete-Button mit EventListener ausstatten
             newEditButton = document.getElementById('btnEdit' + value.data['userid']) as HTMLButtonElement;
             newEditButton.addEventListener('click', editUser);
             editButtons.push(newEditButton);
             newDeleteButton = document.getElementById('btnDelete' + value.data['userid']) as HTMLButtonElement;
             newDeleteButton.addEventListener('click', deleteUser);
             deleteButtons.push(newDeleteButton);
+
+            // Form-Inhalte zurücksetzen
             formNeuerUser.reset();
         }).catch((reason: any) => {
             console.log("Es ist ein Fehler aufgetreten: " + reason);
@@ -47,32 +48,46 @@ document.addEventListener("DOMContentLoaded", () => {
         event.preventDefault();
         // Die Daten des gesamten Formulars werden in dem FormData-Objekt gesammelt
         const data: FormData = new FormData(formEditUser);
-        // console.log(data);
 
         axios.post("/edituser", {
             "vorname": data.get("editVorname"),
             "nachname": data.get("editNachname"),
-            "email": data.get("editEmail"),
-            "passwort": data.get("editPasswort")
+            "passwort": data.get("editPasswort"),
+            "id": data.get("editId")
         }).then((value: AxiosResponse) => {
-            // Neue Reihe in die User-Tabelle einfügen
-            appendNewRow(value.data, tableUserList);
+            /**
+             *  TODO Tabellen-Reihe mit geänderten Werten aktualisieren
+             */
 
-            formNeuerUser.reset();
+            // Form wieder verbergen
+            formEditUser.style.visibility = "hidden";
         }).catch((reason: any) => {
-            out.innerText = "Es ist ein Fehler aufgetreten: " + reason;
+            console.log("Es ist ein Fehler aufgetreten: " + reason);
         });
     });
 });
 
 function editUser(event: Event) {
     let btn: HTMLButtonElement = event.currentTarget as HTMLButtonElement;
-    let str: string = btn.id.substr(7);
-    console.log("Edit Function" + str);
+    // Id ermitteln: erste 7 Zeichen abschneiden ("btnEdit0" -> 0)
+    let id: number = btn.id.substr(7) as unknown as number;
+    /**
+     * TODO Werte inkl id in die Form schreiben
+     */
+    formEditUser.style.visibility = "visible";
 }
 
 function deleteUser(event: Event) {
     console.log("Delete Function");
+    let btn: HTMLButtonElement = event.currentTarget as HTMLButtonElement;
+    let id: number = btn.id.substr(9) as unknown as number;
+    axios.post('deleteUser', {
+        'id': id
+    }).then(function (value) {
+
+    }).catch(function (reason) {
+        console.log("Es ist ein Fehler aufgetreten: " + reason);
+    });
 }
 
 function appendNewRow(data: any, tableUserList: HTMLTableElement) {

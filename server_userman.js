@@ -58,6 +58,18 @@ app.post("/edituser", function (req, res) {
     res.contentType("application/json");
     res.send(JSON.stringify(editedUser));
 });
+app.post("/deleteUser", function (req, res) {
+    var id = req.body.id;
+    var idx;
+    for (var _i = 0, userList_2 = userList; _i < userList_2.length; _i++) {
+        var user = userList_2[_i];
+        if (user.userid == id)
+            idx = userList.indexOf(user);
+    }
+    console.log('idx = ' + idx);
+    userList.splice(idx, 1);
+    res.status(200);
+});
 app.get("/module/:nr", function (req, res) {
     var nr = Number(req.params.nr);
     var module = ["OOP", "DM", "AuD", "GDI", "WBS", "LA"];

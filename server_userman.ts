@@ -64,6 +64,17 @@ app.post("/edituser", (req: express.Request, res: express.Response) => {
     res.send(JSON.stringify(editedUser));
 });
 
+app.post("/deleteUser", (req: express.Request, res: express.Response) => {
+    const id: number = req.body.id;
+    let idx: number;
+    for (let user of userList) {
+        if(user.userid == id) idx = userList.indexOf(user);
+    }
+    console.log('idx = ' + idx);
+    userList.splice(idx, 1);
+    res.status(200);
+})
+
 app.get("/module/:nr", (req: express.Request, res: express.Response) => {
     const nr: number = Number(req.params.nr);
     const module: string[] = ["OOP", "DM", "AuD", "GDI", "WBS", "LA"];
