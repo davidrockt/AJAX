@@ -72,6 +72,9 @@ function deleteUser(event) {
     var id = btn.id.substr(9);
     axios.post('deleteUser', {
         'id': id
+    }).then(function (value) {
+    }).catch(function (reason) {
+        console.log("Es ist ein Fehler aufgetreten: " + reason);
     });
 }
 function appendNewRow(data, tableUserList) {

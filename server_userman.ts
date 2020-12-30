@@ -66,14 +66,28 @@ app.post("/edituser", (req: express.Request, res: express.Response) => {
 
 app.post("/deleteUser", (req: express.Request, res: express.Response) => {
     const id: number = req.body.id;
-    let idx: number;
+    let idxUser: number;
     for (let user of userList) {
-        if(user.userid == id) idx = userList.indexOf(user);
+        if(user.userid == id) idxUser = userList.indexOf(user);
     }
-    console.log('idx = ' + idx);
-    userList.splice(idx, 1);
+    console.log('idxUser = ' + idxUser);
+    userList.splice(idxUser, 1);
     res.status(200);
 })
+
+app.get("/delete/:id", (req: express.Request, res: express.Response) => {
+    const id: number = Number(req.params.id);
+    let idxUser: number;
+    for (let user of userList) {
+        if(user.userid == id) idxUser = userList.indexOf(user);
+    }
+    if(idxUser !== undefined) {
+        userList.splice(idxUser, 1);
+        res.status(200);
+    } else {
+        res.sendStatus(404);
+    }
+});
 
 app.get("/module/:nr", (req: express.Request, res: express.Response) => {
     const nr: number = Number(req.params.nr);

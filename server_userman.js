@@ -60,15 +60,31 @@ app.post("/edituser", function (req, res) {
 });
 app.post("/deleteUser", function (req, res) {
     var id = req.body.id;
-    var idx;
+    var idxUser;
     for (var _i = 0, userList_2 = userList; _i < userList_2.length; _i++) {
         var user = userList_2[_i];
         if (user.userid == id)
-            idx = userList.indexOf(user);
+            idxUser = userList.indexOf(user);
     }
-    console.log('idx = ' + idx);
-    userList.splice(idx, 1);
+    console.log('idxUser = ' + idxUser);
+    userList.splice(idxUser, 1);
     res.status(200);
+});
+app.get("/delete/:id", function (req, res) {
+    var id = Number(req.params.id);
+    var idxUser;
+    for (var _i = 0, userList_3 = userList; _i < userList_3.length; _i++) {
+        var user = userList_3[_i];
+        if (user.userid == id)
+            idxUser = userList.indexOf(user);
+    }
+    if (idxUser !== undefined) {
+        userList.splice(idxUser, 1);
+        res.status(200);
+    }
+    else {
+        res.sendStatus(404);
+    }
 });
 app.get("/module/:nr", function (req, res) {
     var nr = Number(req.params.nr);
