@@ -2,11 +2,12 @@
 // Bitte vor dem Ausführen auskommentieren und nur während dem Programmieren drinnen lassen...
 // import axios, {AxiosResponse} from "axios";
 var tableUserList = document.getElementById("tableUserList");
+var userTableBody = document.getElementById("tbody");
 var formNeuerUser = document.getElementById("formNeuerUser");
 var formEditUser = document.getElementById("formEditUser");
-var editButtons = [];
-var deleteButtons = [];
+var pEditMessage = document.getElementById("edit-message");
 document.addEventListener("DOMContentLoaded", function () {
+    userTableBody.addEventListener('click', editAndDeleteUser);
     formNeuerUser.addEventListener("submit", function (event) {
         event.preventDefault();
         // Die Daten des gesamten Formulars werden in dem FormData-Objekt gesammelt
@@ -22,15 +23,17 @@ document.addEventListener("DOMContentLoaded", function () {
             "email": data.get("inputEmail"),
             "passwort": data.get("inputPasswort")
         }).then(function (value) {
-            // Neue Reihe in die User-Tabelle einfügen
-            appendNewRow(value.data, tableUserList);
+            // Tabelle aktualisieren
+            updateUserList();
+            // appendNewRow(value.data, tableUserList);
             // Edit- und Delete-Button mit EventListener ausstatten
-            newEditButton = document.getElementById('btnEdit' + value.data['userid']);
+            /*console.log('btnEdit' + value.data['userid']);
+            newEditButton = document.getElementById('btnEdit' + value.data['userid']) as HTMLButtonElement;
             newEditButton.addEventListener('click', editUser);
             editButtons.push(newEditButton);
-            newDeleteButton = document.getElementById('btnDelete' + value.data['userid']);
+            newDeleteButton = document.getElementById('btnDelete' + value.data['userid']) as HTMLButtonElement;
             newDeleteButton.addEventListener('click', deleteUser);
-            deleteButtons.push(newDeleteButton);
+            deleteButtons.push(newDeleteButton);*/
             // Form-Inhalte zurücksetzen
             formNeuerUser.reset();
         }).catch(function (reason) {
@@ -46,52 +49,107 @@ document.addEventListener("DOMContentLoaded", function () {
             "nachname": data.get("editNachname"),
             "passwort": data.get("editPasswort"),
             "id": data.get("editId")
-        }).then(function (value) {
             /**
-             *  TODO Tabellen-Reihe mit geänderten Werten aktualisieren
+             *  TODO Formular mit Werten des Users ausfüllen
              */
+        }).then(function (value) {
+            updateUserList();
             // Form wieder verbergen
             formEditUser.style.visibility = "hidden";
         }).catch(function (reason) {
             console.log("Es ist ein Fehler aufgetreten: " + reason);
+            pEditMessage.innerText = "Es ist ein Fehler aufgetreten: " + reason;
         });
     });
 });
+function editAndDeleteUser(event) {
+    var element = event.target;
+    if (element.matches('.edit-user-button')) {
+        console.log("Edit");
+        editUser(event);
+    }
+    else if (element.matches('.delete-user-button')) {
+        console.log("Delete");
+        deleteUser(event);
+    }
+}
+function renderUserList(userList) {
+    // tableUserList.insertRow(-1);
+    var new_tbody = document.createElement('tbody');
+    new_tbody.id = 'tbody';
+    var row;
+    var td1, td2, td3, td4;
+    for (var _i = 0, userList_1 = userList; _i < userList_1.length; _i++) {
+        var user = userList_1[_i];
+        row = new_tbody.insertRow();
+        td1 = document.createElement('td');
+        td2 = document.createElement('td');
+        td3 = document.createElement('td');
+        td4 = document.createElement('td');
+        td1.innerHTML = user["vorname"];
+        td2.innerHTML = user["nachname"];
+        td3.innerHTML = user["email"];
+        td4.innerHTML = "<td>\n" +
+            "                 <button id='edit" + user['userid'] + "' type=\"button\" class=\"btn btn-secondary btn-sm edit-user-button\">Edit</button>\n" +
+            "                 <button id='delete" + user['userid'] + "' type=\"button\" class=\"btn btn-danger btn-sm delete-user-button\">Delete</button>\n" +
+            "            </td>";
+        row.appendChild(td1);
+        row.appendChild(td2);
+        row.appendChild(td3);
+        row.appendChild(td4);
+    }
+    var old_tbody = document.getElementById('tbody');
+    tableUserList.replaceChild(new_tbody, old_tbody);
+    userTableBody = document.getElementById("tbody");
+    userTableBody.addEventListener('click', editAndDeleteUser);
+}
+function updateUserList() {
+    axios.get('/users')
+        .then(function (value) {
+        console.log("/users Response: ");
+        console.log(value.data);
+        renderUserList(value.data);
+    });
+}
 function editUser(event) {
-    var btn = event.currentTarget;
-    // Id ermitteln: erste 7 Zeichen abschneiden ("btnEdit0" -> 0)
-    var id = btn.id.substr(7);
+    var btn = event.target;
+    // Id ermitteln: erste 4 Zeichen abschneiden ("edit0" -> 0)
+    var id = btn.id.substr(4);
     /**
      * TODO Werte inkl id in die Form schreiben
      */
     formEditUser.style.visibility = "visible";
 }
 function deleteUser(event) {
-    console.log("Delete Function");
-    var btn = event.currentTarget;
-    var id = btn.id.substr(9);
-    axios.post('deleteUser', {
-        'id': id
-    }).then(function (value) {
+    var btn = event.target;
+    var id = btn.id.substr(6);
+    console.log("Delete Function, id = " + btn.id);
+    axios.delete('delete/' + id)
+        .then(function (value) {
+        console.log("Deleted:");
+        console.log(value.data);
+        updateUserList();
     }).catch(function (reason) {
         console.log("Es ist ein Fehler aufgetreten: " + reason);
     });
 }
-function appendNewRow(data, tableUserList) {
-    var row = tableUserList.insertRow(-1);
-    var td1 = document.createElement('td');
-    var td2 = document.createElement('td');
-    var td3 = document.createElement('td');
-    var td4 = document.createElement('td');
+/*
+function appendNewRow(data: any, tableUserList: HTMLTableElement) {
+    let row: HTMLTableRowElement = tableUserList.insertRow(-1);
+    let td1: HTMLTableDataCellElement = document.createElement('td');
+    let td2: HTMLTableDataCellElement = document.createElement('td');
+    let td3: HTMLTableDataCellElement = document.createElement('td');
+    let td4: HTMLTableDataCellElement = document.createElement('td');
     td1.innerHTML = data["vorname"];
     td2.innerHTML = data["nachname"];
     td3.innerHTML = data["email"];
     td4.innerHTML = "<td>\n" +
         "                 <button id='btnEdit" + data['userid'] + "' type=\"button\" class=\"btn btn-secondary btn-sm\">Edit</button>\n" +
         "                 <button id='btnDelete" + data['userid'] + "'type=\"button\" class=\"btn btn-danger btn-sm\">Delete</button>\n" +
-        "            </td>";
+        "            </td>"
     row.appendChild(td1);
     row.appendChild(td2);
     row.appendChild(td3);
     row.appendChild(td4);
 }
+ */ 

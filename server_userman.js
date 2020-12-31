@@ -31,6 +31,11 @@ app.get("/", function (req, res) {
     res.status(200);
     res.sendFile(__dirname + "/userman.html");
 });
+app.get("/users", function (req, res) {
+    res.status(200);
+    res.contentType("application/json");
+    res.send(JSON.stringify(userList));
+});
 app.post("/neueruser", function (req, res) {
     var vorname = req.body.vorname;
     var nachname = req.body.nachname;
@@ -43,6 +48,7 @@ app.post("/neueruser", function (req, res) {
     res.send(JSON.stringify(user));
 });
 app.post("/edituser", function (req, res) {
+    console.log(req.body);
     var vorname = req.body.vorname;
     var nachname = req.body.nachname;
     var email = req.body.email;
@@ -53,32 +59,32 @@ app.post("/edituser", function (req, res) {
         if (user.email == email)
             editedUser = user;
     }
-    editedUser.editUser(vorname, nachname, passwort);
-    res.status(200);
-    res.contentType("application/json");
-    res.send(JSON.stringify(editedUser));
+    if (editedUser !== undefined) {
+        editedUser.editUser(vorname, nachname, passwort);
+        res.status(200);
+        res.contentType("application/json");
+        res.send(JSON.stringify(editedUser));
+    }
+    else {
+        console.log("email = " + email);
+        console.log(userList);
+        // res.send("User with email " + email + " undefined");
+        res.sendStatus(404);
+    }
 });
-app.post("/deleteUser", function (req, res) {
-    var id = req.body.id;
+app.delete("/delete/:id", function (req, res) {
+    var id = Number(req.params.id);
+    console.log("id = " + id);
     var idxUser;
     for (var _i = 0, userList_2 = userList; _i < userList_2.length; _i++) {
         var user = userList_2[_i];
-        if (user.userid == id)
-            idxUser = userList.indexOf(user);
-    }
-    console.log('idxUser = ' + idxUser);
-    userList.splice(idxUser, 1);
-    res.status(200);
-});
-app.get("/delete/:id", function (req, res) {
-    var id = Number(req.params.id);
-    var idxUser;
-    for (var _i = 0, userList_3 = userList; _i < userList_3.length; _i++) {
-        var user = userList_3[_i];
+        console.log(user);
         if (user.userid == id)
             idxUser = userList.indexOf(user);
     }
     if (idxUser !== undefined) {
+        res.contentType("application/json");
+        res.send(JSON.stringify(userList[idxUser]));
         userList.splice(idxUser, 1);
         res.status(200);
     }
@@ -99,3 +105,4 @@ app.get("/module/:nr", function (req, res) {
 });
 // Warum bei getElementById "as HTML..." ?
 // welcher Datentyp ist JSON? Object?
+// Debuggen ??

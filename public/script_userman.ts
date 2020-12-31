@@ -3,13 +3,22 @@
 // import axios, {AxiosResponse} from "axios";
 
 const tableUserList: HTMLTableElement = document.getElementById("tableUserList") as HTMLTableElement;
+let userTableBody: HTMLBodyElement = document.getElementById("tbody") as HTMLBodyElement;
 const formNeuerUser: HTMLFormElement = document.getElementById("formNeuerUser") as HTMLFormElement;
 const formEditUser: HTMLFormElement = document.getElementById("formEditUser") as HTMLFormElement;
-let editButtons: HTMLButtonElement[] = [];
-let deleteButtons: HTMLButtonElement[] = [];
+const pEditMessage: HTMLParagraphElement = document.getElementById("edit-message") as HTMLParagraphElement;
+
+// Interface representing a user
+interface User {
+    vorname: string;
+    nachname: string;
+    email: string;
+    passwort: string;
+    userid: number;
+}
 
 document.addEventListener("DOMContentLoaded", () => {
-
+    userTableBody.addEventListener('click', editAndDeleteUser);
     formNeuerUser.addEventListener("submit", (event: Event) => {
         event.preventDefault();
         // Die Daten des gesamten Formulars werden in dem FormData-Objekt gesammelt
@@ -26,16 +35,18 @@ document.addEventListener("DOMContentLoaded", () => {
             "email": data.get("inputEmail"),
             "passwort": data.get("inputPasswort")
         }).then((value: AxiosResponse) => {
-            // Neue Reihe in die User-Tabelle einfügen
-            appendNewRow(value.data, tableUserList);
+            // Tabelle aktualisieren
+            updateUserList();
+            // appendNewRow(value.data, tableUserList);
 
             // Edit- und Delete-Button mit EventListener ausstatten
+            /*console.log('btnEdit' + value.data['userid']);
             newEditButton = document.getElementById('btnEdit' + value.data['userid']) as HTMLButtonElement;
             newEditButton.addEventListener('click', editUser);
             editButtons.push(newEditButton);
             newDeleteButton = document.getElementById('btnDelete' + value.data['userid']) as HTMLButtonElement;
             newDeleteButton.addEventListener('click', deleteUser);
-            deleteButtons.push(newDeleteButton);
+            deleteButtons.push(newDeleteButton);*/
 
             // Form-Inhalte zurücksetzen
             formNeuerUser.reset();
@@ -54,23 +65,74 @@ document.addEventListener("DOMContentLoaded", () => {
             "nachname": data.get("editNachname"),
             "passwort": data.get("editPasswort"),
             "id": data.get("editId")
-        }).then((value: AxiosResponse) => {
             /**
-             *  TODO Tabellen-Reihe mit geänderten Werten aktualisieren
+             *  TODO Formular mit Werten des Users ausfüllen
              */
-
+        }).then((value: AxiosResponse) => {
+            updateUserList();
             // Form wieder verbergen
             formEditUser.style.visibility = "hidden";
         }).catch((reason: any) => {
             console.log("Es ist ein Fehler aufgetreten: " + reason);
+            pEditMessage.innerText = "Es ist ein Fehler aufgetreten: " + reason;
         });
     });
 });
 
+function editAndDeleteUser(event: Event) {
+    let element = event.target as HTMLElement;
+    if (element.matches('.edit-user-button')) {
+        console.log("Edit")
+        editUser(event);
+    } else if (element.matches('.delete-user-button')) {
+        console.log("Delete")
+        deleteUser(event);
+    }
+}
+
+function renderUserList(userList: User[]) {
+    // tableUserList.insertRow(-1);
+    let new_tbody = document.createElement('tbody');
+    new_tbody.id = 'tbody';
+    let row: HTMLTableRowElement;
+    let td1, td2, td3, td4: HTMLTableDataCellElement;
+    for (let user of userList) {
+        row = new_tbody.insertRow();
+        td1 = document.createElement('td');
+        td2 = document.createElement('td');
+        td3 = document.createElement('td');
+        td4 = document.createElement('td');
+        td1.innerHTML = user["vorname"];
+        td2.innerHTML = user["nachname"];
+        td3.innerHTML = user["email"];
+        td4.innerHTML = "<td>\n" +
+            "                 <button id='edit" + user['userid'] + "' type=\"button\" class=\"btn btn-secondary btn-sm edit-user-button\">Edit</button>\n" +
+            "                 <button id='delete" + user['userid'] + "' type=\"button\" class=\"btn btn-danger btn-sm delete-user-button\">Delete</button>\n" +
+            "            </td>"
+        row.appendChild(td1);
+        row.appendChild(td2);
+        row.appendChild(td3);
+        row.appendChild(td4);
+    }
+    let old_tbody = document.getElementById('tbody');
+    tableUserList.replaceChild(new_tbody, old_tbody);
+    userTableBody = document.getElementById("tbody") as HTMLBodyElement;
+    userTableBody.addEventListener('click', editAndDeleteUser);
+}
+
+function updateUserList() {
+    axios.get('/users')
+        .then(value => {
+            console.log("/users Response: ");
+            console.log(value.data);
+            renderUserList(value.data);
+        });
+}
+
 function editUser(event: Event) {
-    let btn: HTMLButtonElement = event.currentTarget as HTMLButtonElement;
-    // Id ermitteln: erste 7 Zeichen abschneiden ("btnEdit0" -> 0)
-    let id: number = btn.id.substr(7) as unknown as number;
+    let btn: HTMLButtonElement = event.target as HTMLButtonElement;
+    // Id ermitteln: erste 4 Zeichen abschneiden ("edit0" -> 0)
+    let id: number = btn.id.substr(4) as unknown as number;
     /**
      * TODO Werte inkl id in die Form schreiben
      */
@@ -78,18 +140,20 @@ function editUser(event: Event) {
 }
 
 function deleteUser(event: Event) {
-    console.log("Delete Function");
-    let btn: HTMLButtonElement = event.currentTarget as HTMLButtonElement;
-    let id: number = btn.id.substr(9) as unknown as number;
-    axios.post('deleteUser', {
-        'id': id
-    }).then(function (value) {
-
+    let btn: HTMLButtonElement = event.target as HTMLButtonElement;
+    let id: number = btn.id.substr(6) as unknown as number;
+    console.log("Delete Function, id = " + btn.id);
+    axios.delete('delete/' + id)
+        .then((value) => {
+            console.log("Deleted:")
+            console.log(value.data);
+            updateUserList();
     }).catch(function (reason) {
         console.log("Es ist ein Fehler aufgetreten: " + reason);
     });
 }
 
+/*
 function appendNewRow(data: any, tableUserList: HTMLTableElement) {
     let row: HTMLTableRowElement = tableUserList.insertRow(-1);
     let td1: HTMLTableDataCellElement = document.createElement('td');
@@ -108,3 +172,4 @@ function appendNewRow(data: any, tableUserList: HTMLTableElement) {
     row.appendChild(td3);
     row.appendChild(td4);
 }
+ */
