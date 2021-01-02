@@ -35,13 +35,11 @@ document.addEventListener("DOMContentLoaded", function () {
         event.preventDefault();
         // Die Daten des gesamten Formulars werden in dem FormData-Objekt gesammelt
         var data = new FormData(formEditUser);
-        console.log("formEditUser");
-        console.log(data);
-        console.log(formEditUser);
         axios.post("/edituser", {
             "vorname": data.get("editVorname"),
             "nachname": data.get("editNachname"),
             "passwort": data.get("editPasswort"),
+            "email": data.get("editEmail"),
             "id": data.get("editId")
         }).then(function (value) {
             updateUserList();
