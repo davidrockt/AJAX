@@ -54,45 +54,46 @@ function editAndDeleteUser(event) {
         deleteUser(event);
     }
 }
-function renderUserList(userList) {
+function updateUserList() {
     var tableUserList = document.getElementById("tableUserList");
     var userTableBody;
     var new_tbody = document.createElement('tbody');
     new_tbody.id = 'tbody';
     var row;
     var td1, td2, td3, td4, td5;
-    for (var _i = 0, userList_1 = userList; _i < userList_1.length; _i++) {
-        var user = userList_1[_i];
-        row = new_tbody.insertRow();
-        td1 = document.createElement('td');
-        td2 = document.createElement('td');
-        td3 = document.createElement('td');
-        td4 = document.createElement('td');
-        td5 = document.createElement('td');
-        td5.innerHTML = user["userid"].toString();
-        td1.innerHTML = user["vorname"];
-        td2.innerHTML = user["nachname"];
-        td3.innerHTML = user["email"];
-        td4.innerHTML = "<td>\n" +
-            "                 <button id='edit" + user['userid'] + "' type=\"button\" class=\"btn btn-secondary btn-sm edit-user-button\">Edit</button>\n" +
-            "                 <button id='delete" + user['userid'] + "' type=\"button\" class=\"btn btn-danger btn-sm delete-user-button\">Delete</button>\n" +
-            "            </td>";
-        row.appendChild(td5);
-        row.appendChild(td1);
-        row.appendChild(td2);
-        row.appendChild(td3);
-        row.appendChild(td4);
-    }
-    var old_tbody = document.getElementById('tbody');
-    tableUserList.replaceChild(new_tbody, old_tbody);
-    userTableBody = document.getElementById("tbody");
-    userTableBody.addEventListener('click', editAndDeleteUser);
-}
-function updateUserList() {
     axios.get('/users')
         .then(function (value) {
-        renderUserList(value.data);
+        for (var i = 0; i < value.data.length; i++) {
+            td1 = document.createElement('td');
+            td2 = document.createElement('td');
+            td3 = document.createElement('td');
+            td4 = document.createElement('td');
+            td5 = document.createElement('td');
+            td5.innerHTML = value.data[i]["userid"].toString();
+            td1.innerHTML = value.data[i]["vorname"];
+            td2.innerHTML = value.data[i]["nachname"];
+            td3.innerHTML = value.data[i]["email"];
+            td4.innerHTML = "<td>\n" +
+                "                 <button id='edit" + value.data[i]['userid'] + "' type=\"button\" class=\"btn btn-secondary btn-sm edit-user-button\">Edit</button>\n" +
+                "                 <button id='delete" + value.data[i]['userid'] + "' type=\"button\" class=\"btn btn-danger btn-sm delete-user-button\">Delete</button>\n" +
+                "            </td>";
+            row = new_tbody.insertRow();
+            row.appendChild(td5);
+            row.appendChild(td1);
+            row.appendChild(td2);
+            row.appendChild(td3);
+            row.appendChild(td4);
+        }
+        var old_tbody = document.getElementById('tbody');
+        tableUserList.replaceChild(new_tbody, old_tbody);
+        userTableBody = document.getElementById("tbody");
+        userTableBody.addEventListener('click', editAndDeleteUser);
+    }).catch(function (reason) {
+        console.log("Es ist ein Fehler aufgetreten: " + reason);
+        console.log(reason.message);
+        console.log(reason.config);
     });
+    ;
 }
 function editUser(event) {
     var formEditUser = document.getElementById("formEditUser");
