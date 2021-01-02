@@ -1,12 +1,6 @@
 // Importiert die statische Variable "axios" und den Typ "AxiosResponse"
 // Bitte vor dem Ausführen auskommentieren und nur während dem Programmieren drinnen lassen...
-// import axios, {AxiosResponse} from "axios";
-
-const tableUserList: HTMLTableElement = document.getElementById("tableUserList") as HTMLTableElement;
-let userTableBody: HTMLBodyElement = document.getElementById("tbody") as HTMLBodyElement;
-const formNeuerUser: HTMLFormElement = document.getElementById("formNeuerUser") as HTMLFormElement;
-const formEditUser: HTMLFormElement = document.getElementById("formEditUser") as HTMLFormElement;
-const pEditMessage: HTMLParagraphElement = document.getElementById("edit-message") as HTMLParagraphElement;
+import axios, {AxiosResponse} from "axios";
 
 // Interface representing a user
 interface User {
@@ -18,7 +12,14 @@ interface User {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
+    const tableUserList: HTMLTableElement = document.getElementById("tableUserList") as HTMLTableElement;
+    let userTableBody: HTMLBodyElement = document.getElementById("tbody") as HTMLBodyElement;
+    const formNeuerUser: HTMLFormElement = document.getElementById("formNeuerUser") as HTMLFormElement;
+    const formEditUser: HTMLFormElement = document.getElementById("formEditUser") as HTMLFormElement;
+    const pEditMessage: HTMLParagraphElement = document.getElementById("edit-message") as HTMLParagraphElement;
+
     userTableBody.addEventListener('click', editAndDeleteUser);
+
     formNeuerUser.addEventListener("submit", (event: Event) => {
         event.preventDefault();
         // Die Daten des gesamten Formulars werden in dem FormData-Objekt gesammelt
@@ -37,17 +38,6 @@ document.addEventListener("DOMContentLoaded", () => {
         }).then((value: AxiosResponse) => {
             // Tabelle aktualisieren
             updateUserList();
-            // appendNewRow(value.data, tableUserList);
-
-            // Edit- und Delete-Button mit EventListener ausstatten
-            /*console.log('btnEdit' + value.data['userid']);
-            newEditButton = document.getElementById('btnEdit' + value.data['userid']) as HTMLButtonElement;
-            newEditButton.addEventListener('click', editUser);
-            editButtons.push(newEditButton);
-            newDeleteButton = document.getElementById('btnDelete' + value.data['userid']) as HTMLButtonElement;
-            newDeleteButton.addEventListener('click', deleteUser);
-            deleteButtons.push(newDeleteButton);*/
-
             // Form-Inhalte zurücksetzen
             formNeuerUser.reset();
         }).catch((reason: any) => {
@@ -59,15 +49,15 @@ document.addEventListener("DOMContentLoaded", () => {
         event.preventDefault();
         // Die Daten des gesamten Formulars werden in dem FormData-Objekt gesammelt
         const data: FormData = new FormData(formEditUser);
+        /**
+         *  TODO Formular mit Werten des Users ausfüllen
+         */
 
         axios.post("/edituser", {
             "vorname": data.get("editVorname"),
             "nachname": data.get("editNachname"),
             "passwort": data.get("editPasswort"),
             "id": data.get("editId")
-            /**
-             *  TODO Formular mit Werten des Users ausfüllen
-             */
         }).then((value: AxiosResponse) => {
             updateUserList();
             // Form wieder verbergen
@@ -91,6 +81,8 @@ function editAndDeleteUser(event: Event) {
 }
 
 function renderUserList(userList: User[]) {
+    const tableUserList: HTMLTableElement = document.getElementById("tableUserList") as HTMLTableElement;
+    let userTableBody: HTMLBodyElement = document.getElementById("tbody") as HTMLBodyElement;
     // tableUserList.insertRow(-1);
     let new_tbody = document.createElement('tbody');
     new_tbody.id = 'tbody';
@@ -130,6 +122,7 @@ function updateUserList() {
 }
 
 function editUser(event: Event) {
+    const formEditUser: HTMLFormElement = document.getElementById("formEditUser") as HTMLFormElement;
     let btn: HTMLButtonElement = event.target as HTMLButtonElement;
     // Id ermitteln: erste 4 Zeichen abschneiden ("edit0" -> 0)
     let id: number = btn.id.substr(4) as unknown as number;

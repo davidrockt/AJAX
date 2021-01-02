@@ -1,12 +1,14 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 // Importiert die statische Variable "axios" und den Typ "AxiosResponse"
 // Bitte vor dem Ausführen auskommentieren und nur während dem Programmieren drinnen lassen...
-// import axios, {AxiosResponse} from "axios";
-var tableUserList = document.getElementById("tableUserList");
-var userTableBody = document.getElementById("tbody");
-var formNeuerUser = document.getElementById("formNeuerUser");
-var formEditUser = document.getElementById("formEditUser");
-var pEditMessage = document.getElementById("edit-message");
+var axios_1 = require("axios");
 document.addEventListener("DOMContentLoaded", function () {
+    var tableUserList = document.getElementById("tableUserList");
+    var userTableBody = document.getElementById("tbody");
+    var formNeuerUser = document.getElementById("formNeuerUser");
+    var formEditUser = document.getElementById("formEditUser");
+    var pEditMessage = document.getElementById("edit-message");
     userTableBody.addEventListener('click', editAndDeleteUser);
     formNeuerUser.addEventListener("submit", function (event) {
         event.preventDefault();
@@ -17,7 +19,7 @@ document.addEventListener("DOMContentLoaded", function () {
         var newDeleteButton;
         // Ein POST-Request wird an /echo adressiert und das (typenlose) Objekt {"in":"wert"} als Daten gesendet
         // Die anonymen Callbackfunktionen für then oder catch werden nach dem Eingang eines Responses aufgerufen
-        axios.post("/neueruser", {
+        axios_1.default.post("/neueruser", {
             "vorname": data.get("inputVorname"),
             "nachname": data.get("inputNachname"),
             "email": data.get("inputEmail"),
@@ -25,15 +27,6 @@ document.addEventListener("DOMContentLoaded", function () {
         }).then(function (value) {
             // Tabelle aktualisieren
             updateUserList();
-            // appendNewRow(value.data, tableUserList);
-            // Edit- und Delete-Button mit EventListener ausstatten
-            /*console.log('btnEdit' + value.data['userid']);
-            newEditButton = document.getElementById('btnEdit' + value.data['userid']) as HTMLButtonElement;
-            newEditButton.addEventListener('click', editUser);
-            editButtons.push(newEditButton);
-            newDeleteButton = document.getElementById('btnDelete' + value.data['userid']) as HTMLButtonElement;
-            newDeleteButton.addEventListener('click', deleteUser);
-            deleteButtons.push(newDeleteButton);*/
             // Form-Inhalte zurücksetzen
             formNeuerUser.reset();
         }).catch(function (reason) {
@@ -44,14 +37,14 @@ document.addEventListener("DOMContentLoaded", function () {
         event.preventDefault();
         // Die Daten des gesamten Formulars werden in dem FormData-Objekt gesammelt
         var data = new FormData(formEditUser);
-        axios.post("/edituser", {
+        /**
+         *  TODO Formular mit Werten des Users ausfüllen
+         */
+        axios_1.default.post("/edituser", {
             "vorname": data.get("editVorname"),
             "nachname": data.get("editNachname"),
             "passwort": data.get("editPasswort"),
             "id": data.get("editId")
-            /**
-             *  TODO Formular mit Werten des Users ausfüllen
-             */
         }).then(function (value) {
             updateUserList();
             // Form wieder verbergen
@@ -74,6 +67,8 @@ function editAndDeleteUser(event) {
     }
 }
 function renderUserList(userList) {
+    var tableUserList = document.getElementById("tableUserList");
+    var userTableBody = document.getElementById("tbody");
     // tableUserList.insertRow(-1);
     var new_tbody = document.createElement('tbody');
     new_tbody.id = 'tbody';
@@ -104,7 +99,7 @@ function renderUserList(userList) {
     userTableBody.addEventListener('click', editAndDeleteUser);
 }
 function updateUserList() {
-    axios.get('/users')
+    axios_1.default.get('/users')
         .then(function (value) {
         console.log("/users Response: ");
         console.log(value.data);
@@ -112,6 +107,7 @@ function updateUserList() {
     });
 }
 function editUser(event) {
+    var formEditUser = document.getElementById("formEditUser");
     var btn = event.target;
     // Id ermitteln: erste 4 Zeichen abschneiden ("edit0" -> 0)
     var id = btn.id.substr(4);
@@ -124,7 +120,7 @@ function deleteUser(event) {
     var btn = event.target;
     var id = btn.id.substr(6);
     console.log("Delete Function, id = " + btn.id);
-    axios.delete('delete/' + id)
+    axios_1.default.delete('delete/' + id)
         .then(function (value) {
         console.log("Deleted:");
         console.log(value.data);
