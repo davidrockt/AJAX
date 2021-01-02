@@ -114,13 +114,20 @@ function updateUserList() {
 
 function editUser(event: Event) {
     const formEditUser: HTMLFormElement = document.getElementById("formEditUser") as HTMLFormElement;
+    const inputVorname: HTMLInputElement = document.getElementById("editVorname") as HTMLInputElement;
+    const inputNachname: HTMLInputElement = document.getElementById("editNachname") as HTMLInputElement;
+    const inputEmail: HTMLInputElement = document.getElementById("editEmail") as HTMLInputElement;
     let btn: HTMLButtonElement = event.target as HTMLButtonElement;
     // Id ermitteln: erste 4 Zeichen abschneiden ("edit0" -> 0)
     let id: number = btn.id.substr(4) as unknown as number;
-    /**
-     * TODO Werte inkl id in die Form schreiben
-     */
-    formEditUser.style.visibility = "visible";
+    axios.get("/user/" + id).then((value: AxiosResponse) => {
+        formEditUser.style.visibility = "visible";
+        inputVorname.value = value.data['vorname'];
+        inputNachname.value = value.data['nachname'];
+        inputEmail.value = value.data['email'];
+    }).catch((reason: any) => {
+        console.log("Es ist ein Fehler aufgetreten: " + reason);
+    });
 }
 
 function deleteUser(event: Event) {

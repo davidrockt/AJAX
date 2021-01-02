@@ -97,13 +97,20 @@ function updateUserList() {
 }
 function editUser(event) {
     var formEditUser = document.getElementById("formEditUser");
+    var inputVorname = document.getElementById("editVorname");
+    var inputNachname = document.getElementById("editNachname");
+    var inputEmail = document.getElementById("editEmail");
     var btn = event.target;
     // Id ermitteln: erste 4 Zeichen abschneiden ("edit0" -> 0)
     var id = btn.id.substr(4);
-    /**
-     * TODO Werte inkl id in die Form schreiben
-     */
-    formEditUser.style.visibility = "visible";
+    axios.get("/user/" + id).then(function (value) {
+        formEditUser.style.visibility = "visible";
+        inputVorname.value = value.data['vorname'];
+        inputNachname.value = value.data['nachname'];
+        inputEmail.value = value.data['email'];
+    }).catch(function (reason) {
+        console.log("Es ist ein Fehler aufgetreten: " + reason);
+    });
 }
 function deleteUser(event) {
     var btn = event.target;

@@ -49,7 +49,6 @@ app.post("/neueruser", function (req, res) {
     res.send(JSON.stringify(user));
 });
 app.post("/edituser", function (req, res) {
-    console.log(req.body);
     var vorname = req.body.vorname;
     var nachname = req.body.nachname;
     var email = req.body.email;
@@ -72,11 +71,30 @@ app.post("/edituser", function (req, res) {
         res.status(404).send("User with email " + email + " undefined");
     }
 });
+app.get("/user/:id", function (req, res) {
+    var id = Number(req.params.id);
+    var editedUser;
+    for (var _i = 0, userList_2 = userList; _i < userList_2.length; _i++) {
+        var user = userList_2[_i];
+        if (user.userid == id)
+            editedUser = user;
+    }
+    if (editedUser !== undefined) {
+        res.status(200);
+        res.contentType("application/json");
+        res.send(JSON.stringify(editedUser));
+    }
+    else {
+        // console.log("email = " + email);
+        // TODO Fehlermeldung schicken
+        res.status(404).send("User with id " + id + " undefined");
+    }
+});
 app.delete("/delete/:id", function (req, res) {
     var id = Number(req.params.id);
     var idxUser;
-    for (var _i = 0, userList_2 = userList; _i < userList_2.length; _i++) {
-        var user = userList_2[_i];
+    for (var _i = 0, userList_3 = userList; _i < userList_3.length; _i++) {
+        var user = userList_3[_i];
         if (user.userid == id)
             idxUser = userList.indexOf(user);
     }

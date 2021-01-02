@@ -56,7 +56,6 @@ app.post("/neueruser", (req: express.Request, res: express.Response) => {
 });
 
 app.post("/edituser", (req: express.Request, res: express.Response) => {
-    console.log(req.body);
     const vorname: string = req.body.vorname;
     const nachname: string = req.body.nachname;
     const email: string = req.body.email;
@@ -74,6 +73,23 @@ app.post("/edituser", (req: express.Request, res: express.Response) => {
         // console.log("email = " + email);
         // TODO Fehlermeldung schicken
         res.status(404).send("User with email " + email + " undefined");
+    }
+});
+
+app.get("/user/:id", (req: express.Request, res: express.Response) => {
+    const id: number = Number(req.params.id);
+    let editedUser: User;
+    for(let user of userList) {
+        if(user.userid == id) editedUser = user;
+    }
+    if(editedUser !== undefined) {
+        res.status(200);
+        res.contentType("application/json");
+        res.send(JSON.stringify(editedUser));
+    } else {
+        // console.log("email = " + email);
+        // TODO Fehlermeldung schicken
+        res.status(404).send("User with id " + id + " undefined");
     }
 });
 
