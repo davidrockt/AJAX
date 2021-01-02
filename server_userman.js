@@ -88,7 +88,7 @@ app.get("/user/:id", function (req, res) {
         res.status(404).send("User with id " + id + " undefined");
     }
 });
-app.delete("/delete/:id", function (req, res) {
+app.delete("/user/:id", function (req, res) {
     var id = Number(req.params.id);
     var idxUser;
     for (var _i = 0, userList_3 = userList; _i < userList_3.length; _i++) {
@@ -104,7 +104,7 @@ app.delete("/delete/:id", function (req, res) {
     }
     else {
         // TODO Fehlermeldung schicken
-        res.sendStatus(404);
+        res.sendStatus(204);
     }
 });
 // Warum bei getElementById "as HTML..." ?

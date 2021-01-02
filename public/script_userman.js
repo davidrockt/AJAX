@@ -1,8 +1,6 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
 // Importiert die statische Variable "axios" und den Typ "AxiosResponse"
 // Bitte vor dem Ausführen auskommentieren und nur während dem Programmieren drinnen lassen...
-var axios_1 = require("axios");
+// import axios, {AxiosResponse} from "axios";
 /*****************************************************************************
  * Main Callback: Wait for DOM to be fully loaded                            *
  *****************************************************************************/
@@ -17,12 +15,15 @@ document.addEventListener("DOMContentLoaded", function () {
 /*****************************************************************************
  * Event Handlers (callbacks)                                                *
  *****************************************************************************/
+/**
+ * Neuen User mit den Werten aus formNeuerUser hinzufügen -> POST /neueruser
+ */
 function addUser(event) {
     var formNeuerUser = document.getElementById("formNeuerUser");
     event.preventDefault();
     // Die Daten des gesamten Formulars werden in dem FormData-Objekt gesammelt
     var data = new FormData(formNeuerUser);
-    axios_1.default.post("/neueruser", {
+    axios.post("/neueruser", {
         "vorname": data.get("inputVorname"),
         "nachname": data.get("inputNachname"),
         "email": data.get("inputEmail"),
@@ -36,13 +37,17 @@ function addUser(event) {
         console.log("Es ist ein Fehler aufgetreten: " + reason);
     });
 }
+/**
+ * Veränderte Werte eines Users aus formEditUser entnehmen, Server schicken
+ * und Tabellen-Inhalt updaten -> PUT /user/:id
+ */
 function editUser(event) {
     var formEditUser = document.getElementById("formEditUser");
     var pEditMessage = document.getElementById("edit-message");
     event.preventDefault();
     // Die Daten des gesamten Formulars werden in dem FormData-Objekt gesammelt
     var data = new FormData(formEditUser);
-    axios_1.default.put("/user/" + data.get("editId"), {
+    axios.put("/user/" + data.get("editId"), {
         "vorname": data.get("editVorname"),
         "nachname": data.get("editNachname"),
         "passwort": data.get("editPasswort"),
@@ -56,6 +61,10 @@ function editUser(event) {
         pEditMessage.innerText = "Es ist ein Fehler aufgetreten: " + reason;
     });
 }
+/**
+ * Event-Handler für die Edit and Delete-Buttons
+ * -> Weiterleitung an editUser() und deleteUser
+ */
 function editAndDeleteUser(event) {
     var element = event.target;
     if (element.matches('.edit-user-button')) {
@@ -65,6 +74,9 @@ function editAndDeleteUser(event) {
         deleteUser(event);
     }
 }
+/**
+ * formEditUser sichtbar machen & Daten des Users eintragen
+ */
 function openEditForm(event) {
     var formEditUser = document.getElementById("formEditUser");
     var inputVorname = document.getElementById("editVorname");
@@ -74,7 +86,8 @@ function openEditForm(event) {
     var btn = event.target;
     // Id ermitteln: erste 4 Zeichen abschneiden ("edit0" -> 0)
     var id = btn.id.substr(4);
-    axios_1.default.get("/user/" + id).then(function (value) {
+    axios.get("/user/" + id).then(function (value) {
+        // formEditUser sichtbar machen & Daten des Users eintragen
         formEditUser.style.visibility = "visible";
         inputVorname.value = value.data['vorname'];
         inputNachname.value = value.data['nachname'];
@@ -84,13 +97,14 @@ function openEditForm(event) {
         console.log("Es ist ein Fehler aufgetreten: " + reason);
     });
 }
+/**
+ * User löschen und Tabelleninhalt aktualisieren -> DELETE /user/:id
+ */
 function deleteUser(event) {
     var btn = event.target;
     var id = btn.id.substr(6);
-    axios_1.default.delete('delete/' + id)
+    axios.delete('user/' + id)
         .then(function (value) {
-        console.log("Deleted:");
-        console.log(value.data);
         updateUserList();
     }).catch(function (reason) {
         console.log("Es ist ein Fehler aufgetreten: " + reason);
@@ -99,6 +113,9 @@ function deleteUser(event) {
 /*****************************************************************************
  * Render functions                                                          *
  *****************************************************************************/
+/**
+ * User-Liste anfordern und damit den Tabellen-Inhalt updaten -> GET /users
+ */
 function updateUserList() {
     var tableUserList = document.getElementById("tableUserList");
     var userTableBody;
@@ -106,7 +123,7 @@ function updateUserList() {
     new_tbody.id = 'tbody';
     var row;
     var td1, td2, td3, td4, td5;
-    axios_1.default.get('/users')
+    axios.get('/users')
         .then(function (value) {
         for (var i = 0; i < value.data.length; i++) {
             td1 = document.createElement('td');

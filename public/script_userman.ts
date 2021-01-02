@@ -1,10 +1,11 @@
 // Importiert die statische Variable "axios" und den Typ "AxiosResponse"
 // Bitte vor dem Ausführen auskommentieren und nur während dem Programmieren drinnen lassen...
-import axios, {AxiosResponse} from "axios";
+// import axios, {AxiosResponse} from "axios";
 
 /*****************************************************************************
  * Main Callback: Wait for DOM to be fully loaded                            *
  *****************************************************************************/
+
 document.addEventListener("DOMContentLoaded", () => {
     let userTableBody: HTMLBodyElement = document.getElementById("tbody") as HTMLBodyElement;
     const formNeuerUser: HTMLFormElement = document.getElementById("formNeuerUser") as HTMLFormElement;
@@ -18,6 +19,10 @@ document.addEventListener("DOMContentLoaded", () => {
 /*****************************************************************************
  * Event Handlers (callbacks)                                                *
  *****************************************************************************/
+
+/**
+ * Neuen User mit den Werten aus formNeuerUser hinzufügen -> POST /neueruser
+ */
 function addUser(event: Event) {
     const formNeuerUser: HTMLFormElement = document.getElementById("formNeuerUser") as HTMLFormElement;
     event.preventDefault();
@@ -39,6 +44,10 @@ function addUser(event: Event) {
     });
 }
 
+/**
+ * Veränderte Werte eines Users aus formEditUser entnehmen, Server schicken
+ * und Tabellen-Inhalt updaten -> PUT /user/:id
+ */
 function editUser(event: Event) {
     const formEditUser: HTMLFormElement = document.getElementById("formEditUser") as HTMLFormElement;
     const pEditMessage: HTMLParagraphElement = document.getElementById("edit-message") as HTMLParagraphElement;
@@ -62,6 +71,10 @@ function editUser(event: Event) {
     });
 }
 
+/**
+ * Event-Handler für die Edit and Delete-Buttons
+ * -> Weiterleitung an editUser() und deleteUser
+ */
 function editAndDeleteUser(event: Event) {
     let element = event.target as HTMLElement;
     if (element.matches('.edit-user-button')) {
@@ -71,6 +84,9 @@ function editAndDeleteUser(event: Event) {
     }
 }
 
+/**
+ * formEditUser sichtbar machen & Daten des Users eintragen
+ */
 function openEditForm(event: Event) {
     const formEditUser: HTMLFormElement = document.getElementById("formEditUser") as HTMLFormElement;
     const inputVorname: HTMLInputElement = document.getElementById("editVorname") as HTMLInputElement;
@@ -83,6 +99,7 @@ function openEditForm(event: Event) {
     let id: number = btn.id.substr(4) as unknown as number;
 
     axios.get("/user/" + id).then((value: AxiosResponse) => {
+        // formEditUser sichtbar machen & Daten des Users eintragen
         formEditUser.style.visibility = "visible";
         inputVorname.value = value.data['vorname'];
         inputNachname.value = value.data['nachname'];
@@ -93,13 +110,14 @@ function openEditForm(event: Event) {
     });
 }
 
+/**
+ * User löschen und Tabelleninhalt aktualisieren -> DELETE /user/:id
+ */
 function deleteUser(event: Event) {
     let btn: HTMLButtonElement = event.target as HTMLButtonElement;
     let id: number = btn.id.substr(6) as unknown as number;
-    axios.delete('delete/' + id)
+    axios.delete('user/' + id)
         .then((value) => {
-            console.log("Deleted:")
-            console.log(value.data);
             updateUserList();
         }).catch(function (reason) {
         console.log("Es ist ein Fehler aufgetreten: " + reason);
@@ -109,6 +127,9 @@ function deleteUser(event: Event) {
 /*****************************************************************************
  * Render functions                                                          *
  *****************************************************************************/
+/**
+ * User-Liste anfordern und damit den Tabellen-Inhalt updaten -> GET /users
+ */
 function updateUserList() {
     const tableUserList: HTMLTableElement = document.getElementById("tableUserList") as HTMLTableElement;
     let userTableBody: HTMLBodyElement;

@@ -91,7 +91,7 @@ app.get("/user/:id", (req: express.Request, res: express.Response) => {
     }
 });
 
-app.delete("/delete/:id", (req: express.Request, res: express.Response) => {
+app.delete("/user/:id", (req: express.Request, res: express.Response) => {
     const id: number = Number(req.params.id);
     let idxUser: number;
     for (let user of userList) {
@@ -104,7 +104,7 @@ app.delete("/delete/:id", (req: express.Request, res: express.Response) => {
         res.status(200);
     } else {
         // TODO Fehlermeldung schicken
-        res.sendStatus(404);
+        res.sendStatus(204);
     }
 });
 
