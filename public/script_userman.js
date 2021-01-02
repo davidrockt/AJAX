@@ -5,50 +5,53 @@ document.addEventListener("DOMContentLoaded", function () {
     var userTableBody = document.getElementById("tbody");
     var formNeuerUser = document.getElementById("formNeuerUser");
     var formEditUser = document.getElementById("formEditUser");
-    var pEditMessage = document.getElementById("edit-message");
     userTableBody.addEventListener('click', editAndDeleteUser);
-    formNeuerUser.addEventListener("submit", function (event) {
-        event.preventDefault();
-        // Die Daten des gesamten Formulars werden in dem FormData-Objekt gesammelt
-        var data = new FormData(formNeuerUser);
-        // Ein POST-Request wird an /echo adressiert und das (typenlose) Objekt {"in":"wert"} als Daten gesendet
-        axios.post("/neueruser", {
-            "vorname": data.get("inputVorname"),
-            "nachname": data.get("inputNachname"),
-            "email": data.get("inputEmail"),
-            "passwort": data.get("inputPasswort")
-        }).then(function (value) {
-            // Tabelle aktualisieren
-            updateUserList();
-            // Form-Inhalte zurücksetzen
-            formNeuerUser.reset();
-        }).catch(function (reason) {
-            console.log("Es ist ein Fehler aufgetreten: " + reason);
-        });
-    });
-    formEditUser.addEventListener("submit", function (event) {
-        event.preventDefault();
-        // Die Daten des gesamten Formulars werden in dem FormData-Objekt gesammelt
-        var data = new FormData(formEditUser);
-        axios.put("/user/" + data.get("editId"), {
-            "vorname": data.get("editVorname"),
-            "nachname": data.get("editNachname"),
-            "passwort": data.get("editPasswort"),
-            "email": data.get("editEmail")
-        }).then(function (value) {
-            updateUserList();
-            // Form wieder verbergen
-            formEditUser.style.visibility = "hidden";
-        }).catch(function (reason) {
-            console.log("Es ist ein Fehler aufgetreten: " + reason);
-            pEditMessage.innerText = "Es ist ein Fehler aufgetreten: " + reason;
-        });
-    });
+    formNeuerUser.addEventListener("submit", addUser);
+    formEditUser.addEventListener("submit", editUser);
 });
+function addUser(event) {
+    var formNeuerUser = document.getElementById("formNeuerUser");
+    event.preventDefault();
+    // Die Daten des gesamten Formulars werden in dem FormData-Objekt gesammelt
+    var data = new FormData(formNeuerUser);
+    axios.post("/neueruser", {
+        "vorname": data.get("inputVorname"),
+        "nachname": data.get("inputNachname"),
+        "email": data.get("inputEmail"),
+        "passwort": data.get("inputPasswort")
+    }).then(function (value) {
+        // Tabelle aktualisieren
+        updateUserList();
+        // Form-Inhalte zurücksetzen
+        formNeuerUser.reset();
+    }).catch(function (reason) {
+        console.log("Es ist ein Fehler aufgetreten: " + reason);
+    });
+}
+function editUser(event) {
+    var formEditUser = document.getElementById("formEditUser");
+    var pEditMessage = document.getElementById("edit-message");
+    event.preventDefault();
+    // Die Daten des gesamten Formulars werden in dem FormData-Objekt gesammelt
+    var data = new FormData(formEditUser);
+    axios.put("/user/" + data.get("editId"), {
+        "vorname": data.get("editVorname"),
+        "nachname": data.get("editNachname"),
+        "passwort": data.get("editPasswort"),
+        "email": data.get("editEmail")
+    }).then(function (value) {
+        updateUserList();
+        // Form wieder verbergen
+        formEditUser.style.visibility = "hidden";
+    }).catch(function (reason) {
+        console.log("Es ist ein Fehler aufgetreten: " + reason);
+        pEditMessage.innerText = "Es ist ein Fehler aufgetreten: " + reason;
+    });
+}
 function editAndDeleteUser(event) {
     var element = event.target;
     if (element.matches('.edit-user-button')) {
-        editUser(event);
+        openEditForm(event);
     }
     else if (element.matches('.delete-user-button')) {
         deleteUser(event);
@@ -95,7 +98,7 @@ function updateUserList() {
     });
     ;
 }
-function editUser(event) {
+function openEditForm(event) {
     var formEditUser = document.getElementById("formEditUser");
     var inputVorname = document.getElementById("editVorname");
     var inputNachname = document.getElementById("editNachname");
