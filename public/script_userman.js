@@ -1,8 +1,6 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
 // Importiert die statische Variable "axios" und den Typ "AxiosResponse"
 // Bitte vor dem Ausführen auskommentieren und nur während dem Programmieren drinnen lassen...
-var axios_1 = require("axios");
+// import axios, {AxiosResponse} from "axios";
 document.addEventListener("DOMContentLoaded", function () {
     var tableUserList = document.getElementById("tableUserList");
     var userTableBody = document.getElementById("tbody");
@@ -19,7 +17,7 @@ document.addEventListener("DOMContentLoaded", function () {
         var newDeleteButton;
         // Ein POST-Request wird an /echo adressiert und das (typenlose) Objekt {"in":"wert"} als Daten gesendet
         // Die anonymen Callbackfunktionen für then oder catch werden nach dem Eingang eines Responses aufgerufen
-        axios_1.default.post("/neueruser", {
+        axios.post("/neueruser", {
             "vorname": data.get("inputVorname"),
             "nachname": data.get("inputNachname"),
             "email": data.get("inputEmail"),
@@ -37,10 +35,10 @@ document.addEventListener("DOMContentLoaded", function () {
         event.preventDefault();
         // Die Daten des gesamten Formulars werden in dem FormData-Objekt gesammelt
         var data = new FormData(formEditUser);
-        /**
-         *  TODO Formular mit Werten des Users ausfüllen
-         */
-        axios_1.default.post("/edituser", {
+        console.log("formEditUser");
+        console.log(data);
+        console.log(formEditUser);
+        axios.post("/edituser", {
             "vorname": data.get("editVorname"),
             "nachname": data.get("editNachname"),
             "passwort": data.get("editPasswort"),
@@ -99,7 +97,7 @@ function renderUserList(userList) {
     userTableBody.addEventListener('click', editAndDeleteUser);
 }
 function updateUserList() {
-    axios_1.default.get('/users')
+    axios.get('/users')
         .then(function (value) {
         console.log("/users Response: ");
         console.log(value.data);
@@ -120,7 +118,7 @@ function deleteUser(event) {
     var btn = event.target;
     var id = btn.id.substr(6);
     console.log("Delete Function, id = " + btn.id);
-    axios_1.default.delete('delete/' + id)
+    axios.delete('delete/' + id)
         .then(function (value) {
         console.log("Deleted:");
         console.log(value.data);

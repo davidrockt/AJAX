@@ -1,6 +1,6 @@
 // Importiert die statische Variable "axios" und den Typ "AxiosResponse"
 // Bitte vor dem Ausführen auskommentieren und nur während dem Programmieren drinnen lassen...
-import axios, {AxiosResponse} from "axios";
+// import axios, {AxiosResponse} from "axios";
 
 // Interface representing a user
 interface User {
@@ -49,9 +49,9 @@ document.addEventListener("DOMContentLoaded", () => {
         event.preventDefault();
         // Die Daten des gesamten Formulars werden in dem FormData-Objekt gesammelt
         const data: FormData = new FormData(formEditUser);
-        /**
-         *  TODO Formular mit Werten des Users ausfüllen
-         */
+        console.log("formEditUser");
+        console.log(data);
+        console.log(formEditUser)
 
         axios.post("/edituser", {
             "vorname": data.get("editVorname"),
