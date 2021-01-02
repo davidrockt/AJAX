@@ -70,7 +70,6 @@ app.put("/user/:id", (req: express.Request, res: express.Response) => {
         res.contentType("application/json");
         res.send(JSON.stringify(editedUser));
     } else {
-        // console.log("email = " + email);
         // TODO Fehlermeldung schicken
         res.status(404).send("User with email " + email + " undefined");
     }
@@ -87,7 +86,6 @@ app.get("/user/:id", (req: express.Request, res: express.Response) => {
         res.contentType("application/json");
         res.send(JSON.stringify(editedUser));
     } else {
-        // console.log("email = " + email);
         // TODO Fehlermeldung schicken
         res.status(404).send("User with id " + id + " undefined");
     }
@@ -110,21 +108,8 @@ app.delete("/delete/:id", (req: express.Request, res: express.Response) => {
     }
 });
 
-app.get("/module/:nr", (req: express.Request, res: express.Response) => {
-    const nr: number = Number(req.params.nr);
-    const module: string[] = ["OOP", "DM", "AuD", "GDI", "WBS", "LA"];
-
-    if(module[nr] !== undefined) {
-        res.status(200);
-        res.send(module[nr]);
-    } else {
-        res.sendStatus(404);
-    }
-});
-
 // Warum bei getElementById "as HTML..." ?
 // welcher Datentyp ist JSON? Object?
 // Debuggen ??
 
 // TODO
-// Error-Handling (Kein User mit dieser Email usw)
