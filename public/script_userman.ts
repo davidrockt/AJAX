@@ -23,12 +23,8 @@ document.addEventListener("DOMContentLoaded", () => {
         event.preventDefault();
         // Die Daten des gesamten Formulars werden in dem FormData-Objekt gesammelt
         const data: FormData = new FormData(formNeuerUser);
-        console.log(data);
-        let newEditButton: HTMLButtonElement;
-        let newDeleteButton: HTMLButtonElement;
 
         // Ein POST-Request wird an /echo adressiert und das (typenlose) Objekt {"in":"wert"} als Daten gesendet
-        // Die anonymen Callbackfunktionen für then oder catch werden nach dem Eingang eines Responses aufgerufen
         axios.post("/neueruser", {
             "vorname": data.get("inputVorname"),
             "nachname": data.get("inputNachname"),
@@ -49,7 +45,7 @@ document.addEventListener("DOMContentLoaded", () => {
         // Die Daten des gesamten Formulars werden in dem FormData-Objekt gesammelt
         const data: FormData = new FormData(formEditUser);
 
-        axios.post("/edituser", {
+        axios.put("/user/" + data.get("editId"), {
             "vorname": data.get("editVorname"),
             "nachname": data.get("editNachname"),
             "passwort": data.get("editPasswort"),
@@ -80,13 +76,15 @@ function renderUserList(userList: User[]) {
     let new_tbody = document.createElement('tbody');
     new_tbody.id = 'tbody';
     let row: HTMLTableRowElement;
-    let td1, td2, td3, td4: HTMLTableDataCellElement;
+    let td1, td2, td3, td4, td5: HTMLTableDataCellElement;
     for (let user of userList) {
         row = new_tbody.insertRow();
         td1 = document.createElement('td');
         td2 = document.createElement('td');
         td3 = document.createElement('td');
         td4 = document.createElement('td');
+        td5 = document.createElement('td');
+        td5.innerHTML = user["userid"].toString();
         td1.innerHTML = user["vorname"];
         td2.innerHTML = user["nachname"];
         td3.innerHTML = user["email"];
@@ -94,6 +92,7 @@ function renderUserList(userList: User[]) {
             "                 <button id='edit" + user['userid'] + "' type=\"button\" class=\"btn btn-secondary btn-sm edit-user-button\">Edit</button>\n" +
             "                 <button id='delete" + user['userid'] + "' type=\"button\" class=\"btn btn-danger btn-sm delete-user-button\">Delete</button>\n" +
             "            </td>"
+        row.appendChild(td5);
         row.appendChild(td1);
         row.appendChild(td2);
         row.appendChild(td3);
@@ -117,14 +116,18 @@ function editUser(event: Event) {
     const inputVorname: HTMLInputElement = document.getElementById("editVorname") as HTMLInputElement;
     const inputNachname: HTMLInputElement = document.getElementById("editNachname") as HTMLInputElement;
     const inputEmail: HTMLInputElement = document.getElementById("editEmail") as HTMLInputElement;
+    const inputId: HTMLInputElement = document.getElementById("editId") as HTMLInputElement;
     let btn: HTMLButtonElement = event.target as HTMLButtonElement;
+
     // Id ermitteln: erste 4 Zeichen abschneiden ("edit0" -> 0)
     let id: number = btn.id.substr(4) as unknown as number;
+
     axios.get("/user/" + id).then((value: AxiosResponse) => {
         formEditUser.style.visibility = "visible";
         inputVorname.value = value.data['vorname'];
         inputNachname.value = value.data['nachname'];
         inputEmail.value = value.data['email'];
+        inputId.value = value.data['userid'];
     }).catch((reason: any) => {
         console.log("Es ist ein Fehler aufgetreten: " + reason);
     });

@@ -55,14 +55,14 @@ app.post("/neueruser", (req: express.Request, res: express.Response) => {
     res.send(JSON.stringify(user));
 });
 
-app.post("/edituser", (req: express.Request, res: express.Response) => {
+app.put("/user/:id", (req: express.Request, res: express.Response) => {
     const vorname: string = req.body.vorname;
     const nachname: string = req.body.nachname;
     const email: string = req.body.email;
     const passwort: string = req.body.passwort;
     let editedUser: User;
     for(let user of userList) {
-        if(user.email == email) editedUser = user;
+        if(user.userid.toString() == req.params.id) editedUser = user;
     }
     if(editedUser !== undefined) {
         editedUser.editUser(vorname, nachname, passwort);

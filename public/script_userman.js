@@ -11,11 +11,7 @@ document.addEventListener("DOMContentLoaded", function () {
         event.preventDefault();
         // Die Daten des gesamten Formulars werden in dem FormData-Objekt gesammelt
         var data = new FormData(formNeuerUser);
-        console.log(data);
-        var newEditButton;
-        var newDeleteButton;
         // Ein POST-Request wird an /echo adressiert und das (typenlose) Objekt {"in":"wert"} als Daten gesendet
-        // Die anonymen Callbackfunktionen für then oder catch werden nach dem Eingang eines Responses aufgerufen
         axios.post("/neueruser", {
             "vorname": data.get("inputVorname"),
             "nachname": data.get("inputNachname"),
@@ -34,7 +30,7 @@ document.addEventListener("DOMContentLoaded", function () {
         event.preventDefault();
         // Die Daten des gesamten Formulars werden in dem FormData-Objekt gesammelt
         var data = new FormData(formEditUser);
-        axios.post("/edituser", {
+        axios.put("/user/" + data.get("editId"), {
             "vorname": data.get("editVorname"),
             "nachname": data.get("editNachname"),
             "passwort": data.get("editPasswort"),
@@ -64,7 +60,7 @@ function renderUserList(userList) {
     var new_tbody = document.createElement('tbody');
     new_tbody.id = 'tbody';
     var row;
-    var td1, td2, td3, td4;
+    var td1, td2, td3, td4, td5;
     for (var _i = 0, userList_1 = userList; _i < userList_1.length; _i++) {
         var user = userList_1[_i];
         row = new_tbody.insertRow();
@@ -72,6 +68,8 @@ function renderUserList(userList) {
         td2 = document.createElement('td');
         td3 = document.createElement('td');
         td4 = document.createElement('td');
+        td5 = document.createElement('td');
+        td5.innerHTML = user["userid"].toString();
         td1.innerHTML = user["vorname"];
         td2.innerHTML = user["nachname"];
         td3.innerHTML = user["email"];
@@ -79,6 +77,7 @@ function renderUserList(userList) {
             "                 <button id='edit" + user['userid'] + "' type=\"button\" class=\"btn btn-secondary btn-sm edit-user-button\">Edit</button>\n" +
             "                 <button id='delete" + user['userid'] + "' type=\"button\" class=\"btn btn-danger btn-sm delete-user-button\">Delete</button>\n" +
             "            </td>";
+        row.appendChild(td5);
         row.appendChild(td1);
         row.appendChild(td2);
         row.appendChild(td3);
@@ -100,6 +99,7 @@ function editUser(event) {
     var inputVorname = document.getElementById("editVorname");
     var inputNachname = document.getElementById("editNachname");
     var inputEmail = document.getElementById("editEmail");
+    var inputId = document.getElementById("editId");
     var btn = event.target;
     // Id ermitteln: erste 4 Zeichen abschneiden ("edit0" -> 0)
     var id = btn.id.substr(4);
@@ -108,6 +108,7 @@ function editUser(event) {
         inputVorname.value = value.data['vorname'];
         inputNachname.value = value.data['nachname'];
         inputEmail.value = value.data['email'];
+        inputId.value = value.data['userid'];
     }).catch(function (reason) {
         console.log("Es ist ein Fehler aufgetreten: " + reason);
     });

@@ -48,7 +48,7 @@ app.post("/neueruser", function (req, res) {
     res.contentType("application/json");
     res.send(JSON.stringify(user));
 });
-app.post("/edituser", function (req, res) {
+app.put("/user/:id", function (req, res) {
     var vorname = req.body.vorname;
     var nachname = req.body.nachname;
     var email = req.body.email;
@@ -56,7 +56,7 @@ app.post("/edituser", function (req, res) {
     var editedUser;
     for (var _i = 0, userList_1 = userList; _i < userList_1.length; _i++) {
         var user = userList_1[_i];
-        if (user.email == email)
+        if (user.userid.toString() == req.params.id)
             editedUser = user;
     }
     if (editedUser !== undefined) {
