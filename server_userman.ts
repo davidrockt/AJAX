@@ -19,7 +19,6 @@ class User {
         this.passwort = passwort;
     }
 }
-
 let userList: User[] = [];
 
 app.listen(8080, () => {
@@ -43,6 +42,7 @@ app.get("/users", (req: express.Request, res: express.Response) => {
     res.send(JSON.stringify(userList));
 });
 
+// TODO Korrekte Status-Codes!
 app.post("/neueruser", (req: express.Request, res: express.Response) => {
     const vorname: string = req.body.vorname;
     const nachname: string = req.body.nachname;
@@ -71,20 +71,16 @@ app.post("/edituser", (req: express.Request, res: express.Response) => {
         res.contentType("application/json");
         res.send(JSON.stringify(editedUser));
     } else {
-        console.log("email = " + email);
-        console.log(userList);
+        // console.log("email = " + email);
         // TODO Fehlermeldung schicken
-        // res.send("User with email " + email + " undefined");
-        res.sendStatus(404);
+        res.status(404).send("User with email " + email + " undefined");
     }
 });
 
 app.delete("/delete/:id", (req: express.Request, res: express.Response) => {
     const id: number = Number(req.params.id);
-    console.log("id = " + id);
     let idxUser: number;
     for (let user of userList) {
-        console.log(user);
         if(user.userid == id) idxUser = userList.indexOf(user);
     }
     if(idxUser !== undefined) {
@@ -113,3 +109,6 @@ app.get("/module/:nr", (req: express.Request, res: express.Response) => {
 // Warum bei getElementById "as HTML..." ?
 // welcher Datentyp ist JSON? Object?
 // Debuggen ??
+
+// TODO
+// Error-Handling (Kein User mit dieser Email usw)

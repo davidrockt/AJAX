@@ -36,6 +36,7 @@ app.get("/users", function (req, res) {
     res.contentType("application/json");
     res.send(JSON.stringify(userList));
 });
+// TODO Korrekte Status-Codes!
 app.post("/neueruser", function (req, res) {
     var vorname = req.body.vorname;
     var nachname = req.body.nachname;
@@ -66,20 +67,16 @@ app.post("/edituser", function (req, res) {
         res.send(JSON.stringify(editedUser));
     }
     else {
-        console.log("email = " + email);
-        console.log(userList);
+        // console.log("email = " + email);
         // TODO Fehlermeldung schicken
-        // res.send("User with email " + email + " undefined");
-        res.sendStatus(404);
+        res.status(404).send("User with email " + email + " undefined");
     }
 });
 app.delete("/delete/:id", function (req, res) {
     var id = Number(req.params.id);
-    console.log("id = " + id);
     var idxUser;
     for (var _i = 0, userList_2 = userList; _i < userList_2.length; _i++) {
         var user = userList_2[_i];
-        console.log(user);
         if (user.userid == id)
             idxUser = userList.indexOf(user);
     }
@@ -108,3 +105,5 @@ app.get("/module/:nr", function (req, res) {
 // Warum bei getElementById "as HTML..." ?
 // welcher Datentyp ist JSON? Object?
 // Debuggen ??
+// TODO
+// Error-Handling (Kein User mit dieser Email usw)
