@@ -68,6 +68,7 @@ app.post("/edituser", function (req, res) {
     else {
         console.log("email = " + email);
         console.log(userList);
+        // TODO Fehlermeldung schicken
         // res.send("User with email " + email + " undefined");
         res.sendStatus(404);
     }
@@ -89,6 +90,7 @@ app.delete("/delete/:id", function (req, res) {
         res.status(200);
     }
     else {
+        // TODO Fehlermeldung schicken
         res.sendStatus(404);
     }
 });

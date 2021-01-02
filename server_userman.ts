@@ -73,6 +73,7 @@ app.post("/edituser", (req: express.Request, res: express.Response) => {
     } else {
         console.log("email = " + email);
         console.log(userList);
+        // TODO Fehlermeldung schicken
         // res.send("User with email " + email + " undefined");
         res.sendStatus(404);
     }
@@ -92,6 +93,7 @@ app.delete("/delete/:id", (req: express.Request, res: express.Response) => {
         userList.splice(idxUser, 1);
         res.status(200);
     } else {
+        // TODO Fehlermeldung schicken
         res.sendStatus(404);
     }
 });
