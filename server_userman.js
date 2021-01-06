@@ -36,16 +36,15 @@ app.get("/users", function (req, res) {
     res.contentType("application/json");
     res.send(JSON.stringify(userList));
 });
-// TODO Korrekte Status-Codes!
 app.post("/neueruser", function (req, res) {
     // TODO Email existiert schon?
-    var vorname = req.body.vorname.trim();
-    var nachname = req.body.nachname.trim();
-    var email = req.body.email.trim();
-    var passwort = req.body.passwort.trim();
+    var vorname = req.body.vorname;
+    var nachname = req.body.nachname;
+    var email = req.body.email;
+    var passwort = req.body.passwort;
     // Leere und undefinierte Strings ablehnen
     if (vorname && nachname && email && passwort
-        && vorname !== '' && nachname !== '' && email !== '' && passwort !== '') {
+        && vorname.trim() !== '' && nachname.trim() !== '' && email.trim() !== '' && passwort.trim() !== '') {
         var user = new User(vorname, nachname, email, passwort);
         userList.push(user);
         res.status(200);

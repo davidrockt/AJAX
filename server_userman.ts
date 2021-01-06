@@ -43,17 +43,16 @@ app.get("/users", (req: express.Request, res: express.Response) => {
     res.send(JSON.stringify(userList));
 });
 
-// TODO Korrekte Status-Codes!
 app.post("/neueruser", (req: express.Request, res: express.Response) => {
     // TODO Email existiert schon?
-    const vorname: string = req.body.vorname.trim();
-    const nachname: string = req.body.nachname.trim();
-    const email: string = req.body.email.trim();
-    const passwort: string = req.body.passwort.trim();
+    const vorname: string = req.body.vorname;
+    const nachname: string = req.body.nachname;
+    const email: string = req.body.email;
+    const passwort: string = req.body.passwort;
 
     // Leere und undefinierte Strings ablehnen
     if(vorname && nachname && email && passwort
-        && vorname !== '' && nachname !== '' && email !== '' && passwort !== '') {
+        && vorname.trim() !== '' && nachname.trim() !== '' && email.trim() !== '' && passwort.trim() !== '') {
         const user = new User(vorname, nachname, email, passwort);
         userList.push(user);
         res.status(200);
