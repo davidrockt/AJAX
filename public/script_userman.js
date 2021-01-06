@@ -1,9 +1,6 @@
 // Importiert die statische Variable "axios" und den Typ "AxiosResponse"
 // Bitte vor dem Ausführen auskommentieren und nur während dem Programmieren drinnen lassen...
 // import axios, {AxiosResponse} from "axios";
-/*****************************************************************************
- * Main Callback: Wait for DOM to be fully loaded                            *
- *****************************************************************************/
 document.addEventListener("DOMContentLoaded", function () {
     var userTableBody = document.getElementById("tbody");
     var formNeuerUser = document.getElementById("formNeuerUser");
@@ -12,9 +9,6 @@ document.addEventListener("DOMContentLoaded", function () {
     formNeuerUser.addEventListener("submit", addUser);
     formEditUser.addEventListener("submit", editUser);
 });
-/*****************************************************************************
- * Event Handlers (callbacks)                                                *
- *****************************************************************************/
 function addUser(event) {
     // Neuen User mit den Werten aus formNeuerUser hinzufügen -> POST /neueruser
     var formNeuerUser = document.getElementById("formNeuerUser");
@@ -103,9 +97,6 @@ function deleteUser(event) {
         console.log("Es ist ein Fehler aufgetreten: " + reason);
     });
 }
-/*****************************************************************************
- * Render functions                                                          *
- *****************************************************************************/
 function updateUserList() {
     // User-Liste anfordern und damit den Tabellen-Inhalt updaten -> GET /users
     var tableUserList = document.getElementById("tableUserList");

@@ -2,10 +2,6 @@
 // Bitte vor dem Ausführen auskommentieren und nur während dem Programmieren drinnen lassen...
 // import axios, {AxiosResponse} from "axios";
 
-/*****************************************************************************
- * Main Callback: Wait for DOM to be fully loaded                            *
- *****************************************************************************/
-
 document.addEventListener("DOMContentLoaded", () => {
     let userTableBody: HTMLBodyElement = document.getElementById("tbody") as HTMLBodyElement;
     const formNeuerUser: HTMLFormElement = document.getElementById("formNeuerUser") as HTMLFormElement;
@@ -15,10 +11,6 @@ document.addEventListener("DOMContentLoaded", () => {
     formNeuerUser.addEventListener("submit", addUser);
     formEditUser.addEventListener("submit", editUser);
 });
-
-/*****************************************************************************
- * Event Handlers (callbacks)                                                *
- *****************************************************************************/
 
 function addUser(event: Event) {
     // Neuen User mit den Werten aus formNeuerUser hinzufügen -> POST /neueruser
@@ -118,9 +110,6 @@ function deleteUser(event: Event) {
     });
 }
 
-/*****************************************************************************
- * Render functions                                                          *
- *****************************************************************************/
 
 function updateUserList() {
     // User-Liste anfordern und damit den Tabellen-Inhalt updaten -> GET /users

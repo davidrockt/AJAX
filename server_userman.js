@@ -53,8 +53,8 @@ app.post("/neueruser", function (req, res) {
         res.send(JSON.stringify(userList));
     }
     else {
-        console.log("Reqest enthält ungültige Attribute");
         res.status(404);
+        res.send("Reqest enthält ungültige Attribute");
     }
 });
 app.put("/user/:id", function (req, res) {
@@ -75,8 +75,8 @@ app.put("/user/:id", function (req, res) {
         res.send(JSON.stringify(editedUser));
     }
     else {
-        console.log("User with email '" + email + "' undefined");
-        res.status(404); //.send("User with email " + email + " undefined");
+        res.status(404);
+        res.send("User with email '" + email + "' undefined");
     }
 });
 app.get("/user/:id", function (req, res) {
@@ -93,8 +93,8 @@ app.get("/user/:id", function (req, res) {
         res.send(JSON.stringify(editedUser));
     }
     else {
-        console.log("User with id '" + id + "' undefined");
-        res.status(404); //.send("User with id " + id + " undefined");
+        res.status(404);
+        res.send("User with id " + id + " undefined");
     }
 });
 app.delete("/user/:id", function (req, res) {

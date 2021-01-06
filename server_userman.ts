@@ -12,7 +12,7 @@ class User {
         this.userid = idxUser;
         idxUser++;
     }
-    vorname: string; nachname: string; email: string; passwort: string; userid: number;
+    vorname: string; nachname: string; email: string; private passwort: string; userid: number;
     editUser(vorname: string, nachname: string, passwort: string) {
         this.vorname = vorname;
         this.nachname = nachname;
@@ -60,8 +60,8 @@ app.post("/neueruser", (req: express.Request, res: express.Response) => {
         res.contentType("application/json");
         res.send(JSON.stringify(userList));
     } else {
-        console.log("Reqest enthält ungültige Attribute");
         res.status(404);
+        res.send("Reqest enthält ungültige Attribute");
     }
 });
 
@@ -80,8 +80,8 @@ app.put("/user/:id", (req: express.Request, res: express.Response) => {
         res.contentType("application/json");
         res.send(JSON.stringify(editedUser));
     } else {
-        console.log("User with email '" + email + "' undefined");
-        res.status(404) //.send("User with email " + email + " undefined");
+        res.status(404);
+        res.send("User with email '" + email + "' undefined");
     }
 });
 
@@ -96,8 +96,8 @@ app.get("/user/:id", (req: express.Request, res: express.Response) => {
         res.contentType("application/json");
         res.send(JSON.stringify(editedUser));
     } else {
-        console.log("User with id '" + id + "' undefined");
-        res.status(404); //.send("User with id " + id + " undefined");
+        res.status(404);
+        res.send("User with id " + id + " undefined");
     }
 });
 
