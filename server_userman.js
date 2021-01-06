@@ -39,10 +39,10 @@ app.get("/users", function (req, res) {
 // TODO Korrekte Status-Codes!
 app.post("/neueruser", function (req, res) {
     // TODO Email existiert schon?
-    var vorname = req.body.vorname;
-    var nachname = req.body.nachname;
-    var email = req.body.email;
-    var passwort = req.body.passwort;
+    var vorname = req.body.vorname.trim();
+    var nachname = req.body.nachname.trim();
+    var email = req.body.email.trim();
+    var passwort = req.body.passwort.trim();
     // Leere und undefinierte Strings ablehnen
     if (vorname && nachname && email && passwort
         && vorname !== '' && nachname !== '' && email !== '' && passwort !== '') {
@@ -53,6 +53,7 @@ app.post("/neueruser", function (req, res) {
         res.send(JSON.stringify(userList));
     }
     else {
+        console.log("Reqest enthält ungültige Attribute");
         res.status(404);
     }
 });
@@ -74,8 +75,8 @@ app.put("/user/:id", function (req, res) {
         res.send(JSON.stringify(editedUser));
     }
     else {
-        // TODO Fehlermeldung schicken
-        res.status(404).send("User with email " + email + " undefined");
+        console.log("User with email '" + email + "' undefined");
+        res.status(404); //.send("User with email " + email + " undefined");
     }
 });
 app.get("/user/:id", function (req, res) {
@@ -92,8 +93,8 @@ app.get("/user/:id", function (req, res) {
         res.send(JSON.stringify(editedUser));
     }
     else {
-        // TODO Fehlermeldung schicken
-        res.status(404).send("User with id " + id + " undefined");
+        console.log("User with id '" + id + "' undefined");
+        res.status(404); //.send("User with id " + id + " undefined");
     }
 });
 app.delete("/user/:id", function (req, res) {
@@ -112,6 +113,7 @@ app.delete("/user/:id", function (req, res) {
     }
     else {
         // TODO Fehlermeldung schicken
+        console.log("Could not delete user with id '" + id + "'");
         res.sendStatus(204);
     }
 });

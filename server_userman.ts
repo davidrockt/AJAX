@@ -46,10 +46,10 @@ app.get("/users", (req: express.Request, res: express.Response) => {
 // TODO Korrekte Status-Codes!
 app.post("/neueruser", (req: express.Request, res: express.Response) => {
     // TODO Email existiert schon?
-    const vorname: string = req.body.vorname;
-    const nachname: string = req.body.nachname;
-    const email: string = req.body.email;
-    const passwort: string = req.body.passwort;
+    const vorname: string = req.body.vorname.trim();
+    const nachname: string = req.body.nachname.trim();
+    const email: string = req.body.email.trim();
+    const passwort: string = req.body.passwort.trim();
 
     // Leere und undefinierte Strings ablehnen
     if(vorname && nachname && email && passwort
@@ -60,6 +60,7 @@ app.post("/neueruser", (req: express.Request, res: express.Response) => {
         res.contentType("application/json");
         res.send(JSON.stringify(userList));
     } else {
+        console.log("Reqest enthält ungültige Attribute");
         res.status(404);
     }
 });
@@ -79,8 +80,8 @@ app.put("/user/:id", (req: express.Request, res: express.Response) => {
         res.contentType("application/json");
         res.send(JSON.stringify(editedUser));
     } else {
-        // TODO Fehlermeldung schicken
-        res.status(404).send("User with email " + email + " undefined");
+        console.log("User with email '" + email + "' undefined");
+        res.status(404) //.send("User with email " + email + " undefined");
     }
 });
 
@@ -95,8 +96,8 @@ app.get("/user/:id", (req: express.Request, res: express.Response) => {
         res.contentType("application/json");
         res.send(JSON.stringify(editedUser));
     } else {
-        // TODO Fehlermeldung schicken
-        res.status(404).send("User with id " + id + " undefined");
+        console.log("User with id '" + id + "' undefined");
+        res.status(404); //.send("User with id " + id + " undefined");
     }
 });
 
@@ -113,6 +114,7 @@ app.delete("/user/:id", (req: express.Request, res: express.Response) => {
         res.status(200);
     } else {
         // TODO Fehlermeldung schicken
+        console.log("Could not delete user with id '" + id + "'");
         res.sendStatus(204);
     }
 });
