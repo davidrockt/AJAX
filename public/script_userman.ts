@@ -20,15 +20,17 @@ document.addEventListener("DOMContentLoaded", () => {
  * Event Handlers (callbacks)                                                *
  *****************************************************************************/
 
-/**
- * Neuen User mit den Werten aus formNeuerUser hinzufügen -> POST /neueruser
- */
 function addUser(event: Event) {
+    // Neuen User mit den Werten aus formNeuerUser hinzufügen -> POST /neueruser
     const formNeuerUser: HTMLFormElement = document.getElementById("formNeuerUser") as HTMLFormElement;
     event.preventDefault();
     // Die Daten des gesamten Formulars werden in dem FormData-Objekt gesammelt
     const data: FormData = new FormData(formNeuerUser);
 
+
+    // TODO Check if all required fields are filled in
+    // const lastName: string = lastNameField.val().toString().trim();
+    // if (firstName && lastName) {
     axios.post("/neueruser", {
         "vorname": data.get("inputVorname"),
         "nachname": data.get("inputNachname"),
@@ -44,11 +46,9 @@ function addUser(event: Event) {
     });
 }
 
-/**
- * Veränderte Werte eines Users aus formEditUser entnehmen, Server schicken
- * und Tabellen-Inhalt updaten -> PUT /user/:id
- */
 function editUser(event: Event) {
+    // Veränderte Werte eines Users aus formEditUser entnehmen, Server schicken
+    // und Tabellen-Inhalt updaten -> PUT /user/:id
     const formEditUser: HTMLFormElement = document.getElementById("formEditUser") as HTMLFormElement;
     const pEditMessage: HTMLParagraphElement = document.getElementById("edit-message") as HTMLParagraphElement;
     event.preventDefault();
@@ -71,11 +71,9 @@ function editUser(event: Event) {
     });
 }
 
-/**
- * Event-Handler für die Edit and Delete-Buttons
- * -> Weiterleitung an editUser() und deleteUser
- */
 function editAndDeleteUser(event: Event) {
+    // Event-Handler für die Edit and Delete-Buttons
+    // -> Weiterleitung an editUser() und deleteUser
     let element = event.target as HTMLElement;
     if (element.matches('.edit-user-button')) {
         openEditForm(event);
@@ -84,10 +82,8 @@ function editAndDeleteUser(event: Event) {
     }
 }
 
-/**
- * formEditUser sichtbar machen & Daten des Users eintragen
- */
 function openEditForm(event: Event) {
+    // formEditUser sichtbar machen & Daten des Users eintragen
     const formEditUser: HTMLFormElement = document.getElementById("formEditUser") as HTMLFormElement;
     const inputVorname: HTMLInputElement = document.getElementById("editVorname") as HTMLInputElement;
     const inputNachname: HTMLInputElement = document.getElementById("editNachname") as HTMLInputElement;
@@ -110,10 +106,8 @@ function openEditForm(event: Event) {
     });
 }
 
-/**
- * User löschen und Tabelleninhalt aktualisieren -> DELETE /user/:id
- */
 function deleteUser(event: Event) {
+    //User löschen und Tabelleninhalt aktualisieren -> DELETE /user/:id
     let btn: HTMLButtonElement = event.target as HTMLButtonElement;
     let id: number = btn.id.substr(6) as unknown as number;
     axios.delete('user/' + id)
@@ -127,10 +121,9 @@ function deleteUser(event: Event) {
 /*****************************************************************************
  * Render functions                                                          *
  *****************************************************************************/
-/**
- * User-Liste anfordern und damit den Tabellen-Inhalt updaten -> GET /users
- */
+
 function updateUserList() {
+    // User-Liste anfordern und damit den Tabellen-Inhalt updaten -> GET /users
     const tableUserList: HTMLTableElement = document.getElementById("tableUserList") as HTMLTableElement;
     let userTableBody: HTMLBodyElement;
     let new_tbody = document.createElement('tbody');

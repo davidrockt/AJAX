@@ -44,6 +44,7 @@ app.get("/users", (req: express.Request, res: express.Response) => {
 
 // TODO Korrekte Status-Codes!
 app.post("/neueruser", (req: express.Request, res: express.Response) => {
+    // TODO Email existiert schon?
     const vorname: string = req.body.vorname;
     const nachname: string = req.body.nachname;
     const email: string = req.body.email;
@@ -111,5 +112,6 @@ app.delete("/user/:id", (req: express.Request, res: express.Response) => {
 // Warum bei getElementById "as HTML..." ?
 // welcher Datentyp ist JSON? Object?
 // Debuggen ??
+// Muss '/neueruser' in Wirklichkeit '/user/:id' sein?
 
 // TODO

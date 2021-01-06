@@ -38,6 +38,7 @@ app.get("/users", function (req, res) {
 });
 // TODO Korrekte Status-Codes!
 app.post("/neueruser", function (req, res) {
+    // TODO Email existiert schon?
     var vorname = req.body.vorname;
     var nachname = req.body.nachname;
     var email = req.body.email;
@@ -110,4 +111,5 @@ app.delete("/user/:id", function (req, res) {
 // Warum bei getElementById "as HTML..." ?
 // welcher Datentyp ist JSON? Object?
 // Debuggen ??
+// Muss '/neueruser' in Wirklichkeit '/user/:id' sein?
 // TODO

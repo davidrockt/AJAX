@@ -1,0 +1,33 @@
+### Create a new user
+POST http://localhost:8080/neueruser HTTP/1.1
+Content-Type: application/json
+Cookie:
+
+{
+  "vorname": "David",
+  "nachname": "Waldmann",
+  "email": "hi-davidw@web.de",
+  "passwort": "1234"
+}
+
+### Get all users
+GET http://localhost:8080/users HTTP/1.1
+Cookie:
+
+### Get specific user
+GET http://localhost:8080/user/0 HTTP/1.1
+Cookie:
+
+### Update specific user
+PUT http://localhost:8080/user/0 HTTP/1.1
+Content-Type: application/json
+Cookie:
+
+{
+  "vorname": "Peter",
+  "nachname": "Waldmann"
+}
+
+### Delete specific user
+DELETE  http://localhost:8080/user/0 HTTP/1.1
+Cookie:

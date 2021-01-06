@@ -15,14 +15,15 @@ document.addEventListener("DOMContentLoaded", function () {
 /*****************************************************************************
  * Event Handlers (callbacks)                                                *
  *****************************************************************************/
-/**
- * Neuen User mit den Werten aus formNeuerUser hinzufügen -> POST /neueruser
- */
 function addUser(event) {
+    // Neuen User mit den Werten aus formNeuerUser hinzufügen -> POST /neueruser
     var formNeuerUser = document.getElementById("formNeuerUser");
     event.preventDefault();
     // Die Daten des gesamten Formulars werden in dem FormData-Objekt gesammelt
     var data = new FormData(formNeuerUser);
+    // TODO Check if all required fields are filled in
+    // const lastName: string = lastNameField.val().toString().trim();
+    // if (firstName && lastName) {
     axios.post("/neueruser", {
         "vorname": data.get("inputVorname"),
         "nachname": data.get("inputNachname"),
@@ -37,11 +38,9 @@ function addUser(event) {
         console.log("Es ist ein Fehler aufgetreten: " + reason);
     });
 }
-/**
- * Veränderte Werte eines Users aus formEditUser entnehmen, Server schicken
- * und Tabellen-Inhalt updaten -> PUT /user/:id
- */
 function editUser(event) {
+    // Veränderte Werte eines Users aus formEditUser entnehmen, Server schicken
+    // und Tabellen-Inhalt updaten -> PUT /user/:id
     var formEditUser = document.getElementById("formEditUser");
     var pEditMessage = document.getElementById("edit-message");
     event.preventDefault();
@@ -61,11 +60,9 @@ function editUser(event) {
         pEditMessage.innerText = "Es ist ein Fehler aufgetreten: " + reason;
     });
 }
-/**
- * Event-Handler für die Edit and Delete-Buttons
- * -> Weiterleitung an editUser() und deleteUser
- */
 function editAndDeleteUser(event) {
+    // Event-Handler für die Edit and Delete-Buttons
+    // -> Weiterleitung an editUser() und deleteUser
     var element = event.target;
     if (element.matches('.edit-user-button')) {
         openEditForm(event);
@@ -74,10 +71,8 @@ function editAndDeleteUser(event) {
         deleteUser(event);
     }
 }
-/**
- * formEditUser sichtbar machen & Daten des Users eintragen
- */
 function openEditForm(event) {
+    // formEditUser sichtbar machen & Daten des Users eintragen
     var formEditUser = document.getElementById("formEditUser");
     var inputVorname = document.getElementById("editVorname");
     var inputNachname = document.getElementById("editNachname");
@@ -97,10 +92,8 @@ function openEditForm(event) {
         console.log("Es ist ein Fehler aufgetreten: " + reason);
     });
 }
-/**
- * User löschen und Tabelleninhalt aktualisieren -> DELETE /user/:id
- */
 function deleteUser(event) {
+    //User löschen und Tabelleninhalt aktualisieren -> DELETE /user/:id
     var btn = event.target;
     var id = btn.id.substr(6);
     axios.delete('user/' + id)
@@ -113,10 +106,8 @@ function deleteUser(event) {
 /*****************************************************************************
  * Render functions                                                          *
  *****************************************************************************/
-/**
- * User-Liste anfordern und damit den Tabellen-Inhalt updaten -> GET /users
- */
 function updateUserList() {
+    // User-Liste anfordern und damit den Tabellen-Inhalt updaten -> GET /users
     var tableUserList = document.getElementById("tableUserList");
     var userTableBody;
     var new_tbody = document.createElement('tbody');
