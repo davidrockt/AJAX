@@ -10,6 +10,30 @@ Cookie:
   "passwort": "1234"
 }
 
+### Create a new user with already existing email
+POST http://localhost:8080/neueruser HTTP/1.1
+Content-Type: application/json
+Cookie:
+
+{
+  "vorname": "Hans",
+  "nachname": "Wand",
+  "email": "hi-davidw@web.de",
+  "passwort": "1234"
+}
+
+### Create a new user with Leerzeichen
+POST http://localhost:8080/neueruser HTTP/1.1
+Content-Type: application/json
+Cookie:
+
+{
+  "vorname": "    ",
+  "nachname": "Wand",
+  "email": "hi-davidw@web.de",
+  "passwort": "1234"
+}
+
 ### Create a new user with missing attribute
 POST http://localhost:8080/neueruser HTTP/1.1
 Content-Type: application/json

@@ -44,11 +44,18 @@ app.get("/users", function (req, res) {
     res.send(JSON.stringify(userList, replacer));
 });
 app.post("/neueruser", function (req, res) {
-    // TODO Email existiert schon?
     var vorname = req.body.vorname;
     var nachname = req.body.nachname;
     var email = req.body.email;
     var passwort = req.body.passwort;
+    for (var _i = 0, userList_1 = userList; _i < userList_1.length; _i++) {
+        var user = userList_1[_i];
+        if (user.email == req.body.email) {
+            res.status(404);
+            res.send("Email existiert bereits");
+            return;
+        }
+    }
     // Leere und undefinierte Strings ablehnen
     if (vorname && nachname && email && passwort
         && vorname.trim() !== '' && nachname.trim() !== '' && email.trim() !== '' && passwort.trim() !== '') {
@@ -69,12 +76,15 @@ app.put("/user/:id", function (req, res) {
     var email = req.body.email;
     var passwort = req.body.passwort;
     var editedUser;
-    for (var _i = 0, userList_1 = userList; _i < userList_1.length; _i++) {
-        var user = userList_1[_i];
+    for (var _i = 0, userList_2 = userList; _i < userList_2.length; _i++) {
+        var user = userList_2[_i];
         if (user.userid.toString() == req.params.id)
             editedUser = user;
     }
-    if (editedUser !== undefined && editedUser.email == email) {
+    // Leere und undefinierte Strings ablehnen
+    if (vorname && nachname && email && passwort
+        && vorname.trim() !== '' && nachname.trim() !== '' && email.trim() !== '' && passwort.trim() !== ''
+        && editedUser !== undefined && editedUser.email == email) {
         editedUser.editUser(vorname, nachname, passwort);
         res.status(200);
         res.contentType("application/json");
@@ -88,8 +98,8 @@ app.put("/user/:id", function (req, res) {
 app.get("/user/:id", function (req, res) {
     var id = Number(req.params.id);
     var editedUser;
-    for (var _i = 0, userList_2 = userList; _i < userList_2.length; _i++) {
-        var user = userList_2[_i];
+    for (var _i = 0, userList_3 = userList; _i < userList_3.length; _i++) {
+        var user = userList_3[_i];
         if (user.userid == id)
             editedUser = user;
     }
@@ -106,8 +116,8 @@ app.get("/user/:id", function (req, res) {
 app.delete("/user/:id", function (req, res) {
     var id = Number(req.params.id);
     var idxUser;
-    for (var _i = 0, userList_3 = userList; _i < userList_3.length; _i++) {
-        var user = userList_3[_i];
+    for (var _i = 0, userList_4 = userList; _i < userList_4.length; _i++) {
+        var user = userList_4[_i];
         if (user.userid == id)
             idxUser = userList.indexOf(user);
     }
@@ -118,9 +128,8 @@ app.delete("/user/:id", function (req, res) {
         res.status(200);
     }
     else {
-        // TODO Fehlermeldung schicken
-        console.log("Could not delete user with id '" + id + "'");
         res.sendStatus(204);
+        res.send("Could not delete user with id " + id);
     }
 });
 // Warum bei getElementById "as HTML..." ?

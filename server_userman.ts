@@ -52,11 +52,17 @@ app.get("/users", (req: express.Request, res: express.Response) => {
 });
 
 app.post("/neueruser", (req: express.Request, res: express.Response) => {
-    // TODO Email existiert schon?
     const vorname: string = req.body.vorname;
     const nachname: string = req.body.nachname;
     const email: string = req.body.email;
     const passwort: string = req.body.passwort;
+    for(let user of userList) {
+        if(user.email == req.body.email) {
+            res.status(404);
+            res.send("Email existiert bereits");
+            return;
+        }
+    }
 
     // Leere und undefinierte Strings ablehnen
     if(vorname && nachname && email && passwort
@@ -81,7 +87,10 @@ app.put("/user/:id", (req: express.Request, res: express.Response) => {
     for(let user of userList) {
         if(user.userid.toString() == req.params.id) editedUser = user;
     }
-    if(editedUser !== undefined && editedUser.email == email) {
+    // Leere und undefinierte Strings ablehnen
+    if(vorname && nachname && email && passwort
+        && vorname.trim() !== '' && nachname.trim() !== '' && email.trim() !== '' && passwort.trim() !== ''
+        && editedUser !== undefined && editedUser.email == email) {
         editedUser.editUser(vorname, nachname, passwort);
         res.status(200);
         res.contentType("application/json");
@@ -120,9 +129,8 @@ app.delete("/user/:id", (req: express.Request, res: express.Response) => {
         userList.splice(idxUser, 1);
         res.status(200);
     } else {
-        // TODO Fehlermeldung schicken
-        console.log("Could not delete user with id '" + id + "'");
         res.sendStatus(204);
+        res.send("Could not delete user with id " + id)
     }
 });
 
