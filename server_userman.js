@@ -19,6 +19,13 @@ var User = /** @class */ (function () {
     };
     return User;
 }());
+// Helfer-Funktion für json.stringify(user): kein Passwort ausgeben
+function replacer(key, value) {
+    if (key == "passwort") {
+        return undefined;
+    }
+    return value;
+}
 var userList = [];
 app.listen(8080, function () {
     console.log("Verbunden auf http://localhost:8080");
@@ -34,7 +41,7 @@ app.get("/", function (req, res) {
 app.get("/users", function (req, res) {
     res.status(200);
     res.contentType("application/json");
-    res.send(JSON.stringify(userList));
+    res.send(JSON.stringify(userList, replacer));
 });
 app.post("/neueruser", function (req, res) {
     // TODO Email existiert schon?
@@ -49,7 +56,7 @@ app.post("/neueruser", function (req, res) {
         userList.push(user);
         res.status(200);
         res.contentType("application/json");
-        res.send(JSON.stringify(userList));
+        res.send(JSON.stringify(userList, replacer));
     }
     else {
         res.status(404);
@@ -67,15 +74,15 @@ app.put("/user/:id", function (req, res) {
         if (user.userid.toString() == req.params.id)
             editedUser = user;
     }
-    if (editedUser !== undefined) {
+    if (editedUser !== undefined && editedUser.email == email) {
         editedUser.editUser(vorname, nachname, passwort);
         res.status(200);
         res.contentType("application/json");
-        res.send(JSON.stringify(editedUser));
+        res.send(JSON.stringify(editedUser, replacer));
     }
     else {
         res.status(404);
-        res.send("User with email '" + email + "' undefined");
+        res.send("User could not be found");
     }
 });
 app.get("/user/:id", function (req, res) {
@@ -89,7 +96,7 @@ app.get("/user/:id", function (req, res) {
     if (editedUser !== undefined) {
         res.status(200);
         res.contentType("application/json");
-        res.send(JSON.stringify(editedUser));
+        res.send(JSON.stringify(editedUser, replacer));
     }
     else {
         res.status(404);
@@ -106,7 +113,7 @@ app.delete("/user/:id", function (req, res) {
     }
     if (idxUser !== undefined) {
         res.contentType("application/json");
-        res.send(JSON.stringify(userList[idxUser]));
+        res.send(JSON.stringify(userList[idxUser], replacer));
         userList.splice(idxUser, 1);
         res.status(200);
     }
@@ -123,4 +130,5 @@ app.delete("/user/:id", function (req, res) {
 // Ordner-Struktur -> siehe Vorgabe von Manuel Groh
 // bei get("/user/:id") gleichzeit :id und req.param
 // Fehlermeldung des Servers wie zum Client schicken? (zb res.status(404).send("User with id " + id + " undefined") )
+// JSON.stringify(user, replacer... )
 // TODO

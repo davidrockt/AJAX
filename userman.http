@@ -40,7 +40,9 @@ Cookie:
 
 {
   "vorname": "Peter",
-  "nachname": "Waldmann"
+  "nachname": "Waldmann",
+  "email": "hi-davidw@web.de",
+  "passwort": "1234"
 }
 
 ### Delete specific user

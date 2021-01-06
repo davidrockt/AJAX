@@ -20,6 +20,14 @@ class User {
     }
 }
 
+// Helfer-Funktion für json.stringify(user): kein Passwort ausgeben
+function replacer(key, value) {
+    if (key == "passwort") {
+        return undefined;
+    }
+    return value;
+}
+
 let userList: User[] = [];
 
 app.listen(8080, () => {
@@ -40,7 +48,7 @@ app.get("/", (req: express.Request, res: express.Response) => {
 app.get("/users", (req: express.Request, res: express.Response) => {
     res.status(200);
     res.contentType("application/json");
-    res.send(JSON.stringify(userList));
+    res.send(JSON.stringify(userList, replacer));
 });
 
 app.post("/neueruser", (req: express.Request, res: express.Response) => {
@@ -57,7 +65,7 @@ app.post("/neueruser", (req: express.Request, res: express.Response) => {
         userList.push(user);
         res.status(200);
         res.contentType("application/json");
-        res.send(JSON.stringify(userList));
+        res.send(JSON.stringify(userList, replacer));
     } else {
         res.status(404);
         res.send("Reqest enthält ungültige Attribute");
@@ -73,14 +81,14 @@ app.put("/user/:id", (req: express.Request, res: express.Response) => {
     for(let user of userList) {
         if(user.userid.toString() == req.params.id) editedUser = user;
     }
-    if(editedUser !== undefined) {
+    if(editedUser !== undefined && editedUser.email == email) {
         editedUser.editUser(vorname, nachname, passwort);
         res.status(200);
         res.contentType("application/json");
-        res.send(JSON.stringify(editedUser));
+        res.send(JSON.stringify(editedUser, replacer));
     } else {
         res.status(404);
-        res.send("User with email '" + email + "' undefined");
+        res.send("User could not be found");
     }
 });
 
@@ -93,7 +101,7 @@ app.get("/user/:id", (req: express.Request, res: express.Response) => {
     if(editedUser !== undefined) {
         res.status(200);
         res.contentType("application/json");
-        res.send(JSON.stringify(editedUser));
+        res.send(JSON.stringify(editedUser, replacer));
     } else {
         res.status(404);
         res.send("User with id " + id + " undefined");
@@ -108,7 +116,7 @@ app.delete("/user/:id", (req: express.Request, res: express.Response) => {
     }
     if(idxUser !== undefined) {
         res.contentType("application/json");
-        res.send(JSON.stringify(userList[idxUser]));
+        res.send(JSON.stringify(userList[idxUser], replacer));
         userList.splice(idxUser, 1);
         res.status(200);
     } else {
@@ -125,5 +133,6 @@ app.delete("/user/:id", (req: express.Request, res: express.Response) => {
 // Ordner-Struktur -> siehe Vorgabe von Manuel Groh
 // bei get("/user/:id") gleichzeit :id und req.param
 // Fehlermeldung des Servers wie zum Client schicken? (zb res.status(404).send("User with id " + id + " undefined") )
+// JSON.stringify(user, replacer... )
 
 // TODO
