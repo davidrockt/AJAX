@@ -51,7 +51,7 @@ function editUser(event) {
         formEditUser.style.visibility = "hidden";
     }).catch(function (reason) {
         console.log("Es ist ein Fehler aufgetreten: " + reason);
-        pEditMessage.innerText = "Es ist ein Fehler aufgetreten: " + reason;
+        // pEditMessage.innerText = "Es ist ein Fehler aufgetreten: " + reason;
     });
 }
 function editAndDeleteUser(event) {

@@ -59,7 +59,7 @@ function editUser(event: Event) {
         formEditUser.style.visibility = "hidden";
     }).catch((reason: any) => {
         console.log("Es ist ein Fehler aufgetreten: " + reason);
-        pEditMessage.innerText = "Es ist ein Fehler aufgetreten: " + reason;
+        // pEditMessage.innerText = "Es ist ein Fehler aufgetreten: " + reason;
     });
 }
 
