@@ -43,11 +43,18 @@ app.post("/neueruser", function (req, res) {
     var nachname = req.body.nachname;
     var email = req.body.email;
     var passwort = req.body.passwort;
-    var user = new User(vorname, nachname, email, passwort);
-    userList.push(user);
-    res.status(200);
-    res.contentType("application/json");
-    res.send(JSON.stringify(user));
+    // Leere und undefinierte Strings ablehnen
+    if (vorname && nachname && email && passwort
+        && vorname !== '' && nachname !== '' && email !== '' && passwort !== '') {
+        var user = new User(vorname, nachname, email, passwort);
+        userList.push(user);
+        res.status(200);
+        res.contentType("application/json");
+        res.send(JSON.stringify(userList));
+    }
+    else {
+        res.status(404);
+    }
 });
 app.put("/user/:id", function (req, res) {
     var vorname = req.body.vorname;
@@ -111,5 +118,8 @@ app.delete("/user/:id", function (req, res) {
 // Warum bei getElementById "as HTML..." ?
 // welcher Datentyp ist JSON? Object?
 // Debuggen ??
-// Muss '/neueruser' in Wirklichkeit '/user/:id' sein?
+// Muss '/neueruser' in Wirklichkeit '/user/:id' sein? -> nein
+// Ordner-Struktur -> siehe Vorgabe von Manuel Groh
+// bei get("/user/:id") gleichzeit :id und req.param
+// Fehlermeldung des Servers wie zum Client schicken? (zb res.status(404).send("User with id " + id + " undefined") )
 // TODO

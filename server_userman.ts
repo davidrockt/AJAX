@@ -19,6 +19,7 @@ class User {
         this.passwort = passwort;
     }
 }
+
 let userList: User[] = [];
 
 app.listen(8080, () => {
@@ -49,11 +50,18 @@ app.post("/neueruser", (req: express.Request, res: express.Response) => {
     const nachname: string = req.body.nachname;
     const email: string = req.body.email;
     const passwort: string = req.body.passwort;
-    const user = new User(vorname, nachname, email, passwort);
-    userList.push(user);
-    res.status(200);
-    res.contentType("application/json");
-    res.send(JSON.stringify(user));
+
+    // Leere und undefinierte Strings ablehnen
+    if(vorname && nachname && email && passwort
+        && vorname !== '' && nachname !== '' && email !== '' && passwort !== '') {
+        const user = new User(vorname, nachname, email, passwort);
+        userList.push(user);
+        res.status(200);
+        res.contentType("application/json");
+        res.send(JSON.stringify(userList));
+    } else {
+        res.status(404);
+    }
 });
 
 app.put("/user/:id", (req: express.Request, res: express.Response) => {
@@ -112,6 +120,9 @@ app.delete("/user/:id", (req: express.Request, res: express.Response) => {
 // Warum bei getElementById "as HTML..." ?
 // welcher Datentyp ist JSON? Object?
 // Debuggen ??
-// Muss '/neueruser' in Wirklichkeit '/user/:id' sein?
+// Muss '/neueruser' in Wirklichkeit '/user/:id' sein? -> nein
+// Ordner-Struktur -> siehe Vorgabe von Manuel Groh
+// bei get("/user/:id") gleichzeit :id und req.param
+// Fehlermeldung des Servers wie zum Client schicken? (zb res.status(404).send("User with id " + id + " undefined") )
 
 // TODO
