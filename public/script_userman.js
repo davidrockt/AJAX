@@ -91,10 +91,10 @@ function deleteUser(event) {
     var btn = event.target;
     var id = btn.id.substr(6);
     axios.delete('user/' + id)
-        .then(function (value) {
+        .then(function () {
         updateUserList();
     }).catch(function (reason) {
-        console.log("Es ist ein Fehler aufgetreten: " + reason);
+        console.log("Es ist ein Fehler aufgetreten: " + reason.body);
     });
 }
 function updateUserList() {

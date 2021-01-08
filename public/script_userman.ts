@@ -103,10 +103,10 @@ function deleteUser(event: Event) {
     let btn: HTMLButtonElement = event.target as HTMLButtonElement;
     let id: number = btn.id.substr(6) as unknown as number;
     axios.delete('user/' + id)
-        .then((value) => {
+        .then(() => {
             updateUserList();
-        }).catch(function (reason) {
-        console.log("Es ist ein Fehler aufgetreten: " + reason);
+        }).catch((reason: any) => {
+        console.log("Es ist ein Fehler aufgetreten: " + reason.body);
     });
 }
 

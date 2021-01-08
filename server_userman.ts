@@ -58,7 +58,7 @@ app.post("/neueruser", (req: express.Request, res: express.Response) => {
     const passwort: string = req.body.passwort;
     for(let user of userList) {
         if(user.email == req.body.email) {
-            res.status(404);
+            res.status(400);
             res.send("Email existiert bereits");
             return;
         }
@@ -73,7 +73,7 @@ app.post("/neueruser", (req: express.Request, res: express.Response) => {
         res.contentType("application/json");
         res.send(JSON.stringify(userList, replacer));
     } else {
-        res.status(404);
+        res.status(400);
         res.send("Reqest enthält ungültige Attribute");
     }
 });
@@ -125,21 +125,22 @@ app.delete("/user/:id", (req: express.Request, res: express.Response) => {
     }
     if(idxUser !== undefined) {
         res.contentType("application/json");
-        res.send(JSON.stringify(userList[idxUser], replacer));
+        // res.send(JSON.stringify(userList[idxUser], replacer));
         userList.splice(idxUser, 1);
-        res.status(200);
+        res.sendStatus(200);
     } else {
         res.sendStatus(204);
         res.send("Could not delete user with id " + id)
     }
 });
 
-// Warum bei getElementById "as HTML..." ?
-// welcher Datentyp ist JSON? Object?
-// Debuggen ??
+// Debuggen --> Breakpoint in js-Datei nicht ts
 // Muss '/neueruser' in Wirklichkeit '/user/:id' sein? -> nein
 // Ordner-Struktur -> siehe Vorgabe von Manuel Groh
-// bei get("/user/:id") gleichzeit :id und req.param
+
+// import axios?
+// Bootstrap richtig einbinden
+// bei put("/user/:id") gleichzeit :id und req.param
 // Fehlermeldung des Servers wie zum Client schicken? (zb res.status(404).send("User with id " + id + " undefined") )
 // JSON.stringify(user, replacer... )
 
